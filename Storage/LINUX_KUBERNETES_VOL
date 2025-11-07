@@ -1,0 +1,316 @@
+
+When Kubernetes Storage Looks Like a Linux Issue
+
+A Deep-Dive Troubleshooting Guide for PV, PVC, and HostPath Scenarios
+In many Kubernetes clusters—especially development or on-prem environments—applications rely on storage that originates from the underlying Linux node. When something goes wrong, it’s natural to assume the problem lies with Linux storage itself: file permissions, missing paths, or disk space.
+But sometimes, the Linux filesystem is completely healthy while Kubernetes storage objects (PV, PVC, Pod) are misconfigured.
+ This guide walks through a real-world scenario where Kubernetes storage misalignment looked like a Linux issue, and how systematic troubleshooting revealed the root cause.
+
+⚠️ Disclaimer:
+ The YAML, directory names, cluster setup, and examples are reproduced and sanitized for demonstration.
+ This environment uses static provisioning, which is common in development.
+ In production, dynamic provisioning is the recommended approach.
+
+
+✅ Scenario Overview
+A customer reported:
+"Our pods cannot write data. They are mounting a directory on the Linux host, but nothing is being persisted."
+Since the storage came from the Linux server, the initial assumption was:
+ “This must be a host-level storage problem.”
+It wasn’t.
+We investigated step-by-step, validating each layer:
+Linux filesystem
+
+Kubernetes PersistentVolume (PV)
+
+PersistentVolumeClaim (PVC)
+
+Pod volumes and mounts
+
+This layered approach revealed a classic Kubernetes misconfiguration rather than a Linux storage failure.
+
+🔹 Step 1: Validate the Underlying Linux Storage
+Before diving into Kubernetes objects, always confirm the basics on the host node.
+✅ Check the directory permission and existence
+ls -l /pod/data
+
+✅ Check disk capacity
+df -h /pod/data
+
+✅ What we observed
+The directory did exist
+
+Permissions were correct
+
+Disk space was available
+
+
+Kubernetes showed:
+
+ PV status: Available
+
+
+This is important because when using static provisioning:
+Kubernetes does not validate every possible filesystem issue
+
+
+But for a PV to be Available, the path normally:
+Exists.
+Is reachable by kubelet.
+Has correct permissions
+
+So Linux storage looked fine.
+ We moved on.
+
+🔹 Step 2: Examine Kubernetes Objects (PV → PVC → Pod)
+The customer shared three manifests:
+PersistentVolume (PV)
+PersistentVolumeClaim (PVC)
+Pod
+
+
+We applied them and checked their status.
+✅ List PV and PVC:
+kubectl get pv
+kubectl get pvc
+kubectl describe pvc <name-of-pvc>
+
+✅ Findings
+PV status → Available
+
+PVC status → Pending
+
+PVC events → Not Bound
+
+This condition—PVC Pending while PV is Available—almost always means:
+“Kubernetes found a PV but cannot bind it because the specs do not match.”
+We now suspected a configuration mismatch, not a Linux issue.
+
+🔹 Step 3: Identify Why the PV and PVC Did Not Bind
+To understand binding issues, you must compare:
+accessModes
+
+storageClassName
+
+capacity
+
+selectors
+
+PV node affinity (for local PVs)
+
+PVC requests
+
+Pod references
+
+
+✅ The root cause was clear after comparing the YAML:
+🔸 1. Access Modes Mismatch
+PV had:
+ReadWriteOnce (RWO)
+
+PVC requested:
+ReadWriteMany (RWX)
+
+
+These cannot bind because:
+Mode              Meaning
+RWO             Only one node can mount Read/Write
+RWX             Many nodes can mount Read/Write
+ROX             Many nodes read-only
+
+Kubernetes requires the PVC access mode to be equal or MORE restrictive than the PV. RWX cannot match RWO.
+
+🔸 2. storageClassName Mismatch
+PV storageClassName: local-storage
+
+PVC storageClassName: "" (or incorrect)
+
+For binding:
+ ✅ PV.storageClassName must match
+ ✅ PVC.storageClassName exactly
+Any mismatch → PVC will stay Pending.
+
+🔸 3. Pod referenced the PVC incorrectly
+Even if the PV and PVC matched, a Pod still needs:
+persistentVolumeClaim:
+  claimName: correct-pvc-name
+
+The customer’s Pod referenced an incorrect name.
+
+🔹 Step 4: Fix the Configuration
+We corrected all misaligned fields:
+accessModes → both RWX
+
+storageClassName → both local-storage
+
+Pod’s claimName → correct
+
+
+✅ Corrected PV
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: localpv
+spec:
+  capacity:
+    storage: 2Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Delete
+  storageClassName: local-storage
+  local:
+    path: /pod/data
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - kind-worker
+
+✅ Corrected PVC
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: localpvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 2Gi
+  storageClassName: local-storage
+
+✅ Corrected Pod
+apiVersion: v1
+kind: Pod
+metadata:
+  name: storage-pod
+spec:
+  containers:
+    - name: storage-container
+      image: nginx
+      volumeMounts:
+        - name: local-storage
+          mountPath: /data
+  volumes:
+    - name: local-storage
+      persistentVolumeClaim:
+        claimName: localpvc
+
+
+🔹 Step 5: Verify the Fix
+After reapplying:
+kubectl get pv
+kubectl get pvc
+
+✅ Results
+PV status → Bound
+PVC status → Bound
+Pod successfully mounted storage
+Application wrote data normally
+
+🔍 Key Kubernetes Storage Concepts Explained
+This section explains every Kubernetes concept involved in the troubleshooting.
+
+✅ PersistentVolume (PV)
+A PV represents actual storage in the cluster, defined by an admin.
+Attributes include:
+size (capacity)
+access modes
+storage class
+reclaim policy
+backing storage type (local, NFS, cloud)
+A PV with Status = Available means:
+The resource exists,
+It is ready to bind to a PVC
+
+
+
+✅ PersistentVolumeClaim (PVC)
+A PVC is a request for storage made by the user or application.
+Kubernetes matches:
+size
+accessModes
+storageClassName
+node affinity (for local PVs)
+If Kubernetes cannot find a matching PV → PVC stays Pending.
+
+✅ Access Modes
+Mode
+
+RWO: ReadWriteOnce: One node mounts it RW (block storage)
+ROX: ReadOnlyMany: Many nodes read-only
+RWX: ReadWriteMany: Many nodes read/write (NFS, some CSI drivers)
+
+Binding requires:
+PVC access mode ⊆ PV access mode
+
+
+✅ StorageClass
+Defines a “type” of storage.
+ Both PV and PVC must use the same value.
+In dynamic provisioning:
+StorageClass triggers automatic PV creation
+
+In static provisioning:
+StorageClass is used only for matching
+
+
+✅ PV Status Values
+Status
+Meaning
+Available
+Not bound, ready to claim
+Bound
+Attached to a PVC
+Released
+PVC deleted, PV not recycled
+Failed
+PV error state
+
+
+✅ PVC Status Values
+Status
+Meaning
+Pending: No matching PV found
+Bound: Successfully matched
+Lost: Underlying PV is gone or inaccessible
+
+
+✅ Static vs Dynamic Provisioning
+Provisioning Type
+Behavior
+Use Case
+Static
+Admin manually creates PVs
+Dev / Test clusters
+Dynamic
+PV created automatically by StorageClass
+Production
+
+
+💡 Lessons Learned
+A healthy Linux filesystem doesn’t guarantee correct Kubernetes storage behavior.
+
+
+Most storage issues arise from PV/PVC mismatches, not disks.
+
+
+Always validate in order:
+ Linux → PV → PVC → Pod
+
+
+Matching accessModes and storageClass is crucial.
+
+
+Don’t overlook node affinity for local PVs.
+
+
+For production clusters, use dynamic provisioning instead of manually creating PVs.
+
+Kubernetes storage abstractions often hide misconfigurations behind symptoms that look like infrastructure failures.
+ A structured, layered troubleshooting approach makes the real issue obvious.
+If you're working with Kubernetes storage and you see a PVC stuck in Pending, look beyond the Linux layer—the answer often lives most of the time inside the YAML, not the filesystem.
+
