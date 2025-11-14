@@ -1,0 +1,214 @@
+# 🧩 Command Line Confessions: The Case of the Silent Ubuntu VM
+
+## 🧠 Overview
+
+This case began when a customer reported that their **Ubuntu Virtual Machine (VM)** hosted on **Microsoft Azure** suddenly refused to boot.
+The Azure portal showed the VM as **healthy**, but every attempt to start it resulted in a failure to initialize the operating system.
+
+In this post, we’ll go through:
+
+* The **investigation and recovery steps** we followed
+* **What each command does**, and why it matters
+* **Lessons learned** about diagnosing Linux boot failures in the cloud
+
+---
+
+## 🧰 Step 1: Pause and Protect the System
+
+Before making any changes, we **stopped (deallocated)** the affected VM.
+
+This ensures:
+
+* No further data changes occur while troubleshooting
+* Disk consistency is preserved for snapshot operations
+
+---
+
+## 🧩 Step 2: Build a Rescue Environment
+
+We created a **rescue VM** with these properties:
+
+* Same OS version (Ubuntu)
+* Same generation (Gen 1 or Gen 2)
+* Same resource group and region
+
+Then we:
+
+1. Took a **snapshot** of the affected VM’s **OS disk**
+2. Created a **new managed disk** from that snapshot
+3. **Attached the disk** to the rescue VM
+
+This setup allows us to mount and inspect the broken disk safely — without risking data corruption.
+
+---
+
+## 🧭 Step 3: Access the Broken System
+
+SSH into the rescue VM and switch to the root user:
+
+```bash
+sudo su -
+```
+
+**Explanation:**
+`sudo su -` elevates privileges to the root account, ensuring full system-level access.
+
+Identify the attached disk:
+
+```bash
+dmesg | grep SCSI
+```
+
+**Explanation:**
+
+* `dmesg` displays system messages since boot.
+* Filtering for “SCSI” helps identify new disks attached to the VM.
+* Look for entries like:
+
+  ```
+  [ 1828.162306] sd 5:0:0:0: [sdc] Attached SCSI disk
+  ```
+
+  Here, `/dev/sdc` is the new disk we’ll recover.
+
+---
+
+## 🪟 Step 4: Mount the Disk
+
+Create a mount point and attach the partitions:
+
+```bash
+mkdir /rescue
+mount /dev/sdc1 /rescue
+mount /dev/sdc16 /rescue/boot
+mount /dev/sdc15 /rescue/boot/efi
+```
+
+**Explanation:**
+These commands make the disk’s files accessible under the `/rescue` directory.
+Older Ubuntu images may not have all partitions — you can ignore errors for non-existent ones.
+
+Next, we mount system-level directories to simulate a running environment:
+
+```bash
+mount -t proc /proc /rescue/proc
+mount -t sysfs /sys /rescue/sys
+mount -o bind /dev /rescue/dev
+mount -o bind /dev/pts /rescue/dev/pts
+mount -o bind /run /rescue/run
+```
+
+**Explanation:**
+These mounts are essential for tools like `grub-install` and `update-initramfs`, which expect access to `/proc`, `/sys`, `/dev`, and `/run`.
+
+---
+
+## 🧩 Step 5: Enter the Affected System (chroot)
+
+```bash
+chroot /rescue
+```
+
+**Explanation:**
+The `chroot` command changes the apparent root directory for the current process to `/rescue`.
+From this point onward, any command we run operates *as if* we were logged directly into the broken system.
+
+---
+
+## ⚙️ Step 6: Repair the Bootloader (GRUB)
+
+Within the chroot environment, we reinstalled the **GRUB bootloader**:
+
+```bash
+grub-install /dev/sdX
+update-grub
+```
+
+Replace `/dev/sdX` with your disk (e.g. `/dev/sdc`).
+
+**Explanation:**
+
+* `grub-install` installs GRUB on the system’s boot disk.
+* `update-grub` regenerates the configuration file (`/boot/grub/grub.cfg`) so it correctly references the kernel and initrd images.
+
+---
+
+## 🧱 Step 7: Rebuild the initramfs
+
+Next, we regenerated the **initramfs**, the initial RAM filesystem used during early boot:
+
+```bash
+update-initramfs -c -k all
+```
+
+**Explanation:**
+This creates fresh initramfs images for all installed kernels.
+It ensures all required drivers (storage, network, etc.) are present during boot — a common fix when systems hang early in startup.
+
+---
+
+## 🧹 Step 8: Exit and Clean Up
+
+Exit the chroot and unmount everything cleanly:
+
+```bash
+exit
+umount /rescue/proc/
+umount /rescue/sys/
+umount /rescue/dev/pts
+umount /rescue/dev/
+umount /rescue/run
+cd /
+umount /rescue/boot/efi
+umount /rescue/boot
+umount /rescue
+```
+
+If you encounter a “busy” error:
+
+```bash
+umount -l /rescue
+```
+
+Detach the repaired disk from the rescue VM, reattach it to the **original VM**, and start it again.
+
+✅ The VM booted successfully, confirming the recovery was complete.
+
+---
+
+## 🔍 Root Cause Summary
+
+After the investigation, we discovered that:
+
+* The **GRUB configuration** was corrupted, likely due to an interrupted kernel update.
+* The **initramfs** was outdated, missing critical drivers for booting under Azure’s virtual hardware.
+  Reinstalling GRUB and regenerating the initramfs restored proper boot functionality.
+
+---
+
+## 🧠 Lessons Learned
+
+1. **“Healthy” status ≠ Healthy OS**
+   Azure’s health probes focus on the hypervisor layer, not the guest OS integrity.
+2. **Snapshots are your safety net**
+   Always snapshot before deep system changes.
+3. **The chroot method is powerful**
+   It’s like performing system surgery from outside the body.
+4. **Regenerating initramfs**
+   Often overlooked, but it’s the secret to resolving persistent boot loops.
+5. **Documentation matters**
+   Recording each step ensures future recoveries are faster and safer.
+
+---
+
+## 📚 References
+
+* [Azure Documentation: Troubleshoot Linux VM boot issues](https://learn.microsoft.com/en-us/azure/virtual-machines/troubleshooting/troubleshoot-vm-boot-linux)
+* [Ubuntu Man Pages: grub-install(8)](https://manpages.ubuntu.com/manpages/jammy/en/man8/grub-install.8.html)
+* [Ubuntu Man Pages: update-initramfs(8)](https://manpages.ubuntu.com/manpages/jammy/en/man8/update-initramfs.8.html)
+
+---
+Every week, **Command Line Confessions** dives into real-world debugging — where shell commands meet problem-solving stories.
+---
+
+`#CommandLineConfessions` `#DevOps` `#Azure` `#Linux` `#CloudComputing` `#PlatformEngineering` `#SysAdminLife` `#LearnInPublic`
