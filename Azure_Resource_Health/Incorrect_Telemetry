@@ -1,0 +1,217 @@
+
+# 🔍 Azure Linux VM False "Unhealthy" Status — Full Deep-Dive Troubleshooting Journey
+
+### *From Ubuntu 14.04 → 24.04, Generic Kernel, Missing Telemetry & A Very Stressed Customer*
+
+---
+
+## 📌 Overview
+
+This repository documents a **real-world troubleshooting scenario** involving:
+
+* Azure Resource Health consistently marking a VM as **Unhealthy**
+* A customer who had experienced **zero progress for over a month**
+* A VM upgraded across **10 years** of Ubuntu versions
+* Missing Azure telemetry due to the VM running a **generic kernel** instead of an Azure-optimized one
+* Multiple layers of investigation including waagent, kernel modules, and initramfs
+
+This post explains **every step, every twist, and every command**, as a reference for engineers dealing with similar situations.
+
+---
+
+# 🧭 Scenario Summary
+
+A customer raised a high-priority issue:
+
+> *"Our VM shows as **Unhealthy** in Azure Resource Health, but it's running fine.
+> We have **five** similar production machines handling **millions of requests per hour**.
+> We can't afford inaccurate metrics."*
+
+Pressure: **very high.**
+
+Context:
+The customer previously raised this ticket with another handler — and for **over a month**, no meaningful progress happened.
+
+By the time the case reached me, the customer was:
+
+* frustrated
+* anxious
+* and extremely concerned about visibility into their production systems
+
+And rightly so.
+
+---
+
+# 🧩 Step 1 — Check Azure Linux Agent (`waagent`)
+
+The Azure Guest Agent is responsible for reporting VM state, extensions, and health.
+
+### Check status:
+
+```bash
+systemctl status walinuxagent
+```
+
+### Restart to confirm responsiveness:
+
+```bash
+sudo systemctl restart walinuxagent
+```
+
+### Check logs:
+
+```bash
+journalctl -u walinuxagent -n 100
+```
+
+**Result:**
+The agent was running normally. No communication failures.
+So the *agent was not the root cause.*
+
+---
+
+# 🧩 Step 2 — Verify Hyper-V Integration Modules
+
+Azure VMs rely on Hyper-V drivers for storage, networking, and health telemetry.
+
+### Check loaded modules:
+
+```bash
+lsmod | grep hv
+```
+
+Expected modules include:
+
+* `hv_vmbus`
+* `hv_storvsc`
+* `hv_utils`
+* `hv_netvsc`
+* `hid_hyperv`
+
+**Result:**
+All the expected modules were loaded.
+
+This meant **the VM was integrated with Azure’s hypervisor**, so why was Azure still reporting it as unhealthy?
+
+---
+
+# 🧩 Step 3 — Investigating the Kernel Version
+
+The key that unlocked the puzzle.
+
+### Check running kernel:
+
+```bash
+uname -r
+```
+
+**Output:**
+
+```
+6.8.0-87-generic
+```
+
+🛑 **Not an Azure kernel.**
+The expected format is:
+
+```
+6.x.x-xxxx-azure
+```
+
+This immediately raised suspicion.
+
+---
+
+# 🧭 Step 4 — Reviewing the VM’s Upgrade History
+
+During discussion, the customer mentioned:
+
+> *"This VM actually started as **Ubuntu 14.04**.
+> We upgraded it over time to 16.04 → 18.04 → 20.04 → 22.04 → 24.04."*
+
+And that explained everything.
+
+If a VM is continuously upgraded instead of redeployed, it can **retain old kernel configurations**, such as:
+
+* older initramfs
+* generic kernels
+* missing Azure-specific boot modules
+
+**Azure expects the Azure kernel for accurate telemetry.**
+The VM wasn’t broken — but Azure **could not interpret its health signals correctly.**
+
+---
+
+# 🧩 Step 5 — Why Generic Kernel Causes Azure “Unhealthy” State
+
+The `generic` kernel:
+
+* does not preload all Hyper-V modules during initramfs generation
+* may miss Azure-optimized scheduler and networking paths
+* lacks health reporting hooks the Azure platform expects
+
+So Azure sees **incomplete heartbeat signals** and flags the VM **Unhealthy**, even though workloads run fine.
+
+This is why the VM *behaved normally*, yet Azure insisted it was unhealthy.
+
+---
+
+# 🛠 Step 6 — Fix: Install the Azure Kernel
+
+### Update repositories:
+
+```bash
+sudo apt update
+```
+
+### Install the Azure-optimized kernel:
+
+```bash
+sudo apt install linux-azure
+```
+
+### Reboot the VM:
+
+```bash
+sudo reboot
+```
+
+### Confirm kernel after reboot:
+
+```bash
+uname -r
+```
+
+**Expected:**
+
+```
+6.8.x-xxxx-azure
+```
+
+After the reboot, Azure Resource Health instantly flipped to:
+
+**Healthy** ✅
+
+---
+
+# 🎯 Final Takeaways
+
+### Always check these when Azure shows VM as Unhealthy:
+
+✔ Azure Linux Agent status
+✔ Hyper-V modules
+✔ Kernel type (generic vs. azure)
+✔ Boot configuration after major upgrades
+✔ VM history — especially long-lived systems upgraded across multiple OS generations
+
+---
+
+# 🧠 Lessons Learned
+
+1. **Long-upgraded VMs carry technical debt quietly.**
+2. **Generic kernels work but are not Azure-ideal.**
+3. **Azure health reporting depends heavily on kernel and init modules.**
+4. **Customer confidence matters as much as technical resolution.**
+5. **Some problems aren't broken systems — just misaligned expectations.**
+
+
