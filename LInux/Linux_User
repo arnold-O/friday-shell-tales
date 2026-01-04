@@ -1,0 +1,8 @@
+Uderstanding Users in linux
+
+Creating and managing Users.
+Undersanding User Properties.
+Understanding User Configuration Files.
+managing Users and Groups.
+
+In the LInux space there are two common users, there are users for services and there are  users created for people. Services needs access to specific configuration and if there is no access provided, it default to use the root account, and in Linux we do not want that as the root account is so powerful and hence we tend to minimize its usage.
