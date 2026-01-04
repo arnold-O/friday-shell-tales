@@ -47,4 +47,25 @@ From the above frame we could see the default files added to this user directory
 ![alt text](image-6.png)
 
 
+Before moving forward to user properties and their modifications, there is also a one -liner approach in creating a user , that helps sets alot of user properties.
+
+**useradd -m -d /home/testuser3  -c "Testuser Three" -s /bin/bash -G teamthree  -u 1035 -g users -e 2027-12-31 testuser3**
+
+-m → create home directory
+
+-d /home/username → set custom home directory
+
+-c "Full Name" → comment (usually full name)
+
+-s /bin/bash → login shell
+
+-G sudo,developers → supplementary groups
+
+-u 1001 → specific UID
+
+-g users → primary group
+
+-e YYYY-MM-DD → account expiration date
+
+
 
