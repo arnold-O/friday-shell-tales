@@ -14,4 +14,17 @@ In all of this we have a user with ID 0 which bypass all security and this is th
 
 
 
+1. Creating Users
 
+There is a shortcut I use when working on linux to give me a broader overview of the command or utility that i'm working with, this has helped me accross many distros of linux.
+when you are face with with command , you are no that familiar with, after typing the command press tab key twice to give you more options or use the --help flag for how best to use and apply the command. ( see in the image below).
+
+i. the figure is for clicking tab twice for more options
+![alt text](image.png)
+
+ii. This figure is for using the --help flag on a command.
+![alt text](image-1.png)
+
+in  creating a user we use the "useradd" command to create a user. this commands gives us the user created as well as a directory owned by the user usually on /home/<username>. please note by default the directory for ths user is crated in this directory and this can also be altered at the point of creation. And in this directory you will have files created there at pooint of creating the user. These files create the bash shell for bash shell user, this is possible by the skeleton directory which is found in /etc/skel.
+
+Hence this file /etc/skel can be user to create files we want each user to have at point of creation. (as seen in the image below)
