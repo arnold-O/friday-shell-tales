@@ -28,3 +28,23 @@ ii. This figure is for using the --help flag on a command.
 in  creating a user we use the "useradd" command to create a user. this commands gives us the user created as well as a directory owned by the user usually on /home/<username>. please note by default the directory for ths user is crated in this directory and this can also be altered at the point of creation. And in this directory you will have files created there at pooint of creating the user. These files create the bash shell for bash shell user, this is possible by the skeleton directory which is found in /etc/skel.
 
 Hence this file /etc/skel can be user to create files we want each user to have at point of creation. (as seen in the image below)
+
+Here we can see a test user has been created with name testuser and its directory is on /home
+
+![alt text](image-3.png)
+
+![alt text](image-2.png)
+
+
+Now when we find our way into that directory we have this files that normal just the command list (ls) will not bring out, until we add the flag -a to display hidden file then we find this files that have be added to the user home directory upon creation.
+
+![alt text](image-4.png)
+
+
+From the above frame we could see the default files added to this user directory upon creation, just to show you we could ourselves add file our self; i will add a file to the /etc/skel file and create a user afterwards and show this. ( I created two files so you don't confuse the dot (.) in creation of files to create hidden files)
+![alt text](image-5.png)
+
+![alt text](image-6.png)
+
+
+
