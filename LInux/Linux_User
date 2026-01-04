@@ -5,4 +5,13 @@ Undersanding User Properties.
 Understanding User Configuration Files.
 managing Users and Groups.
 
-In the LInux space there are two common users, there are users for services and there are  users created for people. Services needs access to specific configuration and if there is no access provided, it default to use the root account, and in Linux we do not want that as the root account is so powerful and hence we tend to minimize its usage.
+In the LInux space there are two common users, there are users for services and there are  users created for people. Services needs access to specific configuration and if there is no access provided, it default to use the root account, and in Linux we do not want that, as the root account is so powerful and hence we tend to minimize its usage.
+
+The services create  user accounts and uses IDs mostly between 1-999.
+The users create for people or rather persons that needs to access the server/ client machine as the case maybe have their IDs from 1000 and they tend to have login shells like /bin/bash , /bin/sh etc. but the users created for services do not need to login and there are also users that do not login and we see their shells like /sbin/nologin.
+
+In all of this we have a user with ID 0 which bypass all security and this is the root user.
+
+
+
+
