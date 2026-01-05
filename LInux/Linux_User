@@ -79,3 +79,4 @@ These files are important to user management in linux
 /etc/shadow
 /etc/group
 
+The first two files /etc/defaults and /etc/login.defs are conflicting sometimes but if decisions comes down to these files the /etc/login.defs takes lead. 
