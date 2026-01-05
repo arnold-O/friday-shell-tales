@@ -71,3 +71,11 @@ Before moving forward to user properties and their modifications, there is also 
 2. **User Configuration files**
 
 
+These files are important to user management in linux
+
+/etc/defaults/useradd
+/etc/login.defs
+/etc/passwd
+/etc/shadow
+/etc/group
+
