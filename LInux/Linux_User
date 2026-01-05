@@ -80,3 +80,8 @@ These files are important to user management in linux
 /etc/group
 
 The first two files /etc/defaults and /etc/login.defs are conflicting sometimes but if decisions comes down to these files the /etc/login.defs takes lead. 
+
+/etc/skel   this is the skeleton directory
+/etc/passwd  This directory houses a bulk of user details
+/ec/shadow  Here you find password management properties
+/ec/group This help manage user group details and can be understood better in man 5 page of the linux manual
