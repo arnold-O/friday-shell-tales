@@ -84,4 +84,7 @@ The first two files /etc/defaults and /etc/login.defs are conflicting sometimes 
 /etc/skel   this is the skeleton directory
 /etc/passwd  This directory houses a bulk of user details
 /ec/shadow  Here you find password management properties
-/ec/group This help manage user group details and can be understood better in man 5 page of the linux manual
+/ec/group This help manage user group details and can be understood better in man 5 page of the linux manual.
+
+
+for the onliner approach of creating a user, where lost of default parameters are specified if the user ID was specify, le say 1234, in the creation series of subsequent users the order will be maintained if no specified enfactically, if one liner specified 1234, the next user to be creaed will use the order and it ID will be 1235.
