@@ -99,3 +99,11 @@ We create groups to further organize users and manage membership.
 
 This file /etc/group can be edited using the vi/vim editor . This file can also be edited with a special vi command that is vigr which specifical made to edit groups.
 
+This gives the file a temporal his helps avoid the conflicts of two users edit the file file taht is only save we you actually save and exit the editor mode.
+
+git add ,
+git commit -m "temporal vigr"
+
+
+
+
