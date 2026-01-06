@@ -94,3 +94,8 @@ for the onliner approach of creating a user, where lost of default parameters ar
 
 To get better more options type group and hit tab tab on the keyboard.
 The user group files and its properties is found in /etc/group .
+
+We create groups to further organize users and manage membership.
+
+This file /etc/group can be edited using the vi/vim editor . This file can also be edited with a special vi command that is vigr which specifical made to edit groups.
+
