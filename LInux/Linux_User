@@ -88,3 +88,9 @@ The first two files /etc/defaults and /etc/login.defs are conflicting sometimes 
 
 
 for the onliner approach of creating a user, where lost of default parameters are specified if the user ID was specify, le say 1234, in the creation series of subsequent users the order will be maintained if no specified enfactically, if one liner specified 1234, the next user to be creaed will use the order and it ID will be 1235.
+
+
+3. Adding a user to a group
+
+To get better more options type group and hit tab tab on the keyboard.
+The user group files and its properties is found in /etc/group .
