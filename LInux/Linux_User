@@ -106,7 +106,7 @@ Usermod command aalso help to manager user group with options like
 - G New list of the supplementary list
 - a Appends users to supplementary group
 
-To see the 
+To see the properties and group of a user use id and the user name e.g id <username>
 
 
 
