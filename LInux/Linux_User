@@ -108,6 +108,15 @@ Usermod command aalso help to manager user group with options like
 
 To see the properties and group of a user use id and the user name e.g id <username>
 
+User Group
+
+We have two tpes of groups.
+
+i. Primary group
+ii. Secondary Group
+
+Primary Group: This is a mandatory group , that is created automatically when a user is created. The name of the user by default is the name of this group. This group are primarily used for ownership. This is related to permission.
+
 
 
 
