@@ -117,6 +117,9 @@ ii. Secondary Group
 
 Primary Group: This is a mandatory group , that is created automatically when a user is created. The name of the user by default is the name of this group. This group are primarily used for ownership. This is related to permission.
 
+Secondary Group: This is used to grant additional permission to user and special funtion. fr example the adding of users to sudo group is a typical example to give that user root priviledges.
+To find out the primary groups and secondary group a user belongs to type " id <username>". The primary group appears first then the secondary groups.
+
 
 
 
