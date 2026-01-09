@@ -139,6 +139,14 @@ id <username>
 
 The output lists the primary group first, followed by any secondary groups.
 
+By checking the relevant files below, you can see which users have a login shell and which have a no-login shell. Users with a login shell are typically human users, while accounts with a no-login shell are usually service (process) accounts.
+
+If a service account’s shell is changed—for example, from /sbin/nologin to /bin/bash, that account can now be used to log in like any other human user. In other words, even if a process or service account is originally configured as no-login, changing its shell to one that allows login effectively grants it interactive access.
+
+![service/process accounts](image-7.png)
+
+![human users](image-8.png)
+
 
 
 
