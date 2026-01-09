@@ -20,27 +20,32 @@ Among all users, there is a special user with UID 0, which bypasses all security
 
 1. **Creating Users**
 
-There is a shortcut I use when working on linux to give me a broader overview of the command or utility that i'm working with, this has helped me accross many distros of linux.
-when you are face with with command , you are no that familiar with, after typing the command press tab key twice to give you more options or use the --help flag for how best to use and apply the command. ( see in the image below).
+There is a shortcut I often use when working on Linux to get a broader overview of the command or utility I am working with. This approach has been helpful across many Linux distributions.
 
-i. the figure is for clicking tab twice for more options
+When you encounter a command that you are not familiar with, you can type the command name and press the Tab key twice to display available options. Alternatively, you can use the --help flag to view usage information and available options for the command (as shown in the image below).
+
+i. The figure is for clicking tab twice for more options
 ![more options](image.png)
 
 ii. This figure is for using the --help flag on a command.
 ![more options](image-1.png)
 
-in  creating a user we use the "useradd" command to create a user. this commands gives us the user created as well as a directory owned by the user usually on /home/<username>. please note by default the directory for ths user is crated in this directory and this can also be altered at the point of creation. And in this directory you will have files created there at pooint of creating the user. These files create the bash shell for bash shell user, this is possible by the skeleton directory which is found in /etc/skel.
+When creating a user in Linux, we use the useradd command. This command creates the user account and, by default, also creates a home directory for the user, usually located at /home/<username>. It is important to note that the default home directory location can be modified at the time of user creation.
 
-Hence this file /etc/skel can be user to create files we want each user to have at point of creation. (as seen in the image below)
+Within the user’s home directory, several files are created automatically during account creation. These files configure the user’s shell environment, particularly for Bash users. This setup is made possible by the skeleton directory, which is located at /etc/skel.
 
-Here we can see a test user has been created with name testuser and its directory is on /home
+The /etc/skel directory contains default files that are copied into a user’s home directory when the account is created. By customizing the contents of /etc/skel, administrators can ensure that every new user receives specific files at the time of account creation (as shown in the image below).
+
+In the example shown, a test user named testuser has been created, and its home directory resides under /home.
 
 ![create user](image-3.png)
 
 ![user in home directory](image-2.png)
 
 
-Now when we find our way into that directory we have this files that normal just the command list (ls) will not bring out, until we add the flag -a to display hidden file then we find this files that have be added to the user home directory upon creation.
+When we navigate into the user’s home directory, some files are not visible with a normal ls command. These files are hidden by default. To display them, we use the -a flag with the ls command, which shows all files, including hidden ones.
+
+Using ls -a, we can see the hidden files that were added to the user’s home directory at the time of account creation.
 
 ![user directory files](image-4.png)
 
