@@ -148,6 +148,16 @@ If a service account’s shell is changed—for example, from /sbin/nologin to /
 ![human users](image-8.png)
 
 
+diagrams of /etc/passwd file and /etc/shadow file
+
+![/etc/shadow](image-9.png)
+![/etc/passwd](image-10.png)
+
+
+
+
+
+
 
 
 
