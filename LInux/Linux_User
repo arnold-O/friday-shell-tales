@@ -32,31 +32,35 @@ ii. This figure is for using the --help flag on a command.
 
 When creating a user in Linux, we use the useradd command. This command creates the user account and, by default, also creates a home directory for the user, usually located at /home/<username>. It is important to note that the default home directory location can be modified at the time of user creation.
 
-Within the user’s home directory, several files are created automatically during account creation. These files configure the user’s shell environment, particularly for Bash users. This setup is made possible by the skeleton directory, which is located at /etc/skel.
+When a user account is created, several files are automatically added to the user’s home directory. These files help configure the user’s shell environment, especially for Bash users. This is done using the skeleton directory, located at /etc/skel.
 
-The /etc/skel directory contains default files that are copied into a user’s home directory when the account is created. By customizing the contents of /etc/skel, administrators can ensure that every new user receives specific files at the time of account creation (as shown in the image below).
+The /etc/skel directory contains default files that are copied into a new user’s home directory during account creation. By customizing /etc/skel, administrators can ensure that every new user starts with specific configuration files (as shown in the image below).
 
-In the example shown, a test user named testuser has been created, and its home directory resides under /home.
+For example, a test user named testuser has been created, and its home directory is located under /home.
 
 ![create user](image-3.png)
 
 ![user in home directory](image-2.png)
 
 
-When we navigate into the user’s home directory, some files are not visible with a normal ls command. These files are hidden by default. To display them, we use the -a flag with the ls command, which shows all files, including hidden ones.
+When we navigate to a user’s home directory, some files are hidden by default and are not displayed with the standard ls command. To view these files, we can use the -a flag with ls, which shows all files, including hidden ones.
 
-Using ls -a, we can see the hidden files that were added to the user’s home directory at the time of account creation.
+For example, running:
+ls -a   
+This command above will reveal all hidden files that were added to the user’s home directory during account creation.
 
 ![user directory files](image-4.png)
 
+From the image above, we can see the default files that are added to a user’s home directory during account creation. To demonstrate that we can customize these files ourselves, I will add a file to the /etc/skel directory and then create a new user. The files from /etc/skel will be copied into the new user’s home directory.
 
-From the above frame we could see the default files added to this user directory upon creation, just to show you we could ourselves add file our self; i will add a file to the /etc/skel file and create a user afterwards and show this. ( I created two files so you don't confuse the dot (.) in creation of files to create hidden files)
+Note: I created two files in /etc/skel to avoid confusion with using a dot (.) to create hidden files.
+
 ![skel directory](image-5.png)
 
 ![files created ](image-6.png)
 
 
-Before moving forward to user properties and their modifications, there is also a one -liner approach in creating a user , that helps sets alot of user properties.
+Before moving forward to user properties and their modifications, there is also a one-liner approach in creating a user , that helps sets alot of user properties.
 
 **useradd -m -d /home/testuser3  -c "Testuser Three" -s /bin/bash -G teamthree  -u 1035 -g users -e 2027-12-31 testuser3**
 
@@ -96,7 +100,7 @@ The first two files /etc/defaults and /etc/login.defs are conflicting sometimes 
 /ec/group This help manage user group details and can be understood better in man 5 page of the linux manual.
 
 
-for the onliner approach of creating a user, where lost of default parameters are specified if the user ID was specify, le say 1234, in the creation series of subsequent users the order will be maintained if no specified enfactically, if one liner specified 1234, the next user to be creaed will use the order and it ID will be 1235.
+For a one-liner approach to creating a user, many default parameters can be specified. For example, if a specific user ID (UID) is assigned—say 1234—then for subsequent users created without explicitly specifying a UID, the system will continue the sequence. In this case, the next user created will automatically receive UID 1235, maintaining a consistent order.
 
 
 3. Adding a user to a group
