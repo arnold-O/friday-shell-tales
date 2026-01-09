@@ -105,14 +105,13 @@ For a one-liner approach to creating a user, many default parameters can be spec
 
 3. Adding a user to a group
 
-To get better more options type group and hit tab tab on the keyboard.
-The user group files and its properties is found in /etc/group .
+To explore available group-related commands and options, type group and press the Tab key twice.
 
-We create groups to further organize users and manage membership.
+User group information and properties are stored in the /etc/group file. Groups are created to help organize users and manage membership more efficiently.
 
-This file /etc/group can be edited using the vi/vim editor . This file can also be edited with a special vi command that is vigr which specifical made to edit groups.
+The /etc/group file can be edited using standard text editors like vi or vim. However, it is recommended to use the special command vigr, which is specifically designed for safely editing group information.
 
-This gives the file a temporal file that is only save when you actually save and exit the editor mode.
+When using vigr, a temporary copy of the file is created. Changes are only applied to the actual /etc/group file when you explicitly save and exit the editor, which helps prevent accidental corruption of the group file.
 
 Usermod command aalso help to manager user group with options like 
 - g make the user group as primary group
@@ -121,17 +120,24 @@ Usermod command aalso help to manager user group with options like
 
 To see the properties and group of a user use id and the user name e.g id <username>
 
-User Group
+User Groups
 
-We have two tpes of groups.
+In Linux, there are two types of groups:
 
-i. Primary group
-ii. Secondary Group
+Primary Group
 
-Primary Group: This is a mandatory group , that is created automatically when a user is created. The name of the user by default is the name of this group. This group are primarily used for ownership. This is related to permission.
+Secondary Group
 
-Secondary Group: This is used to grant additional permission to user and special funtion. fr example the adding of users to sudo group is a typical example to give that user root priviledges.
-To find out the primary groups and secondary group a user belongs to type " id <username>". The primary group appears first then the secondary groups.
+Primary Group: This is a mandatory group that is automatically created when a user is added. By default, the name of the primary group is the same as the username. The primary group is mainly used for file ownership and permission management.
+
+Secondary Group: Secondary groups are used to grant additional permissions or special functions to a user. A common example is adding a user to the sudo group, which gives the user administrative (root) privileges.
+
+To check the primary and secondary groups a user belongs to, use the command:
+
+id <username>
+
+
+The output lists the primary group first, followed by any secondary groups.
 
 
 
