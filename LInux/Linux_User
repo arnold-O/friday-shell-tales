@@ -1,16 +1,20 @@
-Uderstanding Users in linux
+Understanding Users in Linux
 
-Creating and managing Users.
-Undersanding User Properties.
-Understanding User Configuration Files.
-managing Users and Groups.
+Creating and managing users
 
-In the LInux space there are two common users, there are users for services and there are  users created for people. Services needs access to specific configuration and if there is no access provided, it default to use the root account, and in Linux we do not want that, as the root account is so powerful and hence we tend to minimize its usage.
+Understanding user properties
 
-The services create  user accounts and uses IDs mostly between 1-999.
-The users create for people or rather persons that needs to access the server/ client machine as the case maybe have their IDs from 1000 and they tend to have login shells like /bin/bash , /bin/sh etc. but the users created for services do not need to login and there are also users that do not login and we see their shells like /sbin/nologin.
+Understanding user configuration files
 
-In all of this we have a user with ID 0 which bypass all security and this is the root user.
+Managing users and groups
+
+In the Linux environment, there are two common types of users: system (service) users and human users. Service users are created for running services and require access only to specific configuration files. If proper access is not provided, a service may default to using the root account. In Linux, this is discouraged because the root account is extremely powerful, and its usage should be minimized.
+
+Service accounts are typically created by the system and use user IDs (UIDs) in the range of 1–999.
+
+Human users, or users created for people who need access to a server or client machine, generally have UIDs starting from 1000. These users are assigned login shells such as /bin/bash or /bin/sh. In contrast, service users usually do not require interactive logins and are often assigned shells like /sbin/nologin.
+
+Among all users, there is a special user with UID 0, which bypasses all security restrictions. This user is known as the root user.
 
 
 
@@ -119,6 +123,8 @@ Primary Group: This is a mandatory group , that is created automatically when a 
 
 Secondary Group: This is used to grant additional permission to user and special funtion. fr example the adding of users to sudo group is a typical example to give that user root priviledges.
 To find out the primary groups and secondary group a user belongs to type " id <username>". The primary group appears first then the secondary groups.
+
+
 
 
 
