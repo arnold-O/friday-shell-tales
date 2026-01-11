@@ -48,4 +48,9 @@ Though chown works to change the ownwer of file and group ownwershipbut ther e i
 
 chown :<groupname>  <file/directory>
 
+he permission table and the meaning for files and directory
 
+          | Directory | File   |Numerical values
+   List   | list      |  open  |    4
+   write  | create/del| modify |    2
+execute   | cd        | Run    |    1
