@@ -18,4 +18,17 @@ These permission enttities are represented as
  group - - - the same with R W x
  other - - -  same as above with R W x
 
- 
+add a file here 
+
+ id <username>
+  from our user-creation series this gives us the user and it group and id.
+
+The primary group of a user is by default the name of the group usered when a file/dir is created this can be changed.
+
+For example a user by name testuser create a file file/directory by default this user becomes the owner and group ownwer of the file been created.
+
+-- show file screenshot here
+But this can be changed manually as we will see as this series progresses.
+
+
+
