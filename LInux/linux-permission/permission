@@ -1,0 +1,21 @@
+**Understanding ownership**
+
+Every file have three ( 3 ) entities that can be used to set the permissions/ownership, these entities are "user", "group" and "other"
+
+The checks for permissions for file/directory follows the other they have been listed above ( user, group and other). 
+If a usr wants to acces a file, Linux first checks if the user is the owner taht checking the user entity, then if not linux moves
+to the group if the user is part of the group and neither user or group checks out it goes to the other entity to grant/ deny the 
+permission.
+
+These permission enttities are represented as 
+ r == Read
+ w == write
+ x == Execute
+
+ We have a hyphen or dash to represent ths for each file for:
+
+ user - - -  the three hyphen to be filled with R W x
+ group - - - the same with R W x
+ other - - -  same as above with R W x
+
+ 
