@@ -31,4 +31,21 @@ For example a user by name testuser create a file file/directory by default this
 But this can be changed manually as we will see as this series progresses.
 
 
+Use of CHOWN
+
+chown == stands for change ower/ownership
+This commands acts as in two in one; used to change the owner of a file/dir as well as change the group the file/dir belongs to.
+
+For example:
+chown <testuser1> <file/directoy>
+
+this above command changes the owner of his directory or file to testuser1. As earlier mention to user this command to change the owner and the group simultaneously we use the colon sepearator as seen below
+
+chown testuser:<groupname>  <file/directory>
+
+this above command changes the file or directory to ownwer testuser and group to groupname used. in this command the -R can be added to make the command recursive as againt making sure what ever is inside the dirtory follows suit with the ownership.
+Though chown works to change the ownwer of file and group ownwershipbut ther e is a dedicated command to change the group ownership and that is chgrp. And again to chnage the group alone with owner of file the commands becomes
+
+chown :<groupname>  <file/directory>
+
 
