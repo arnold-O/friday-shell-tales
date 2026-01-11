@@ -54,3 +54,6 @@ he permission table and the meaning for files and directory
    List   | list      |  open  |    4
    write  | create/del| modify |    2
 execute   | cd        | Run    |    1
+
+
+The Read permission is quite tricky as user with read on a directory can list the content on the directory bur can only read the content on that directory if the files or content on the directory permssion is correct, that is to say the read on a directory only list the content and reasding its content is purely the permissions on the content.
