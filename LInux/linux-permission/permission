@@ -68,5 +68,30 @@ So if you get a number other than those 3 number , the permission is broken down
 
 for example these numbers that are not 4 2 1 are broken into  4 2 1.
 
+Numeric mode Usage 
+
+The usage of numeric mode to change permission on file is tricky.
+
+if we have  chmod 767 <filename>
+
+each value represent user, group and other; the three entities associated with permission.
+
+like I early started when the number is not in the values of 4 2 1 the approach is different.
+
+In this case:
+user == 7  this further translate to 4 + 2 + 1 = 7; hence for this file user has rwx
+group == 6 this further translate to 4 + 2  = 6; hence for this file group has rw-
+other == 7  this further translate to 4 + 2 + 1 = 7; hence for this file user has rwx
+
+
+Another example : if we have  chmod 325 <filename>
+
+In this case:
+user == 3  this further translate to 2 + 1 = 3; hence for this file user has -wx
+group == 2 this further translate to 2  = 6; hence for this file group has -w-
+other == 5  this further translate to 4 + 1 = 5; hence for this file user has r-x
+
+These scenerios will help you understand the numeric mode usage
+
 
 
