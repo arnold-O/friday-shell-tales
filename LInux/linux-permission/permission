@@ -113,3 +113,16 @@ getfacl
 The setfacl helps in setting this extra layer of permission while,
 The getfacl helps you to know the acl permission already on it.
 
+
+Setting up ACL
+
+I. To add a permission  to a user
+setfacl -m u:username:rwx /path-to/file
+
+II. To add a permission  to a group
+setfacl -m g:groupname:rwx /path-to/file
+
+To allow the subdirectory to inherit same permission
+add the -R flag to the command 
+
+hence commands becomes  setfacl -Rm g:groupname:rwx /path/to/file
