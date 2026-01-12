@@ -126,3 +126,11 @@ To allow the subdirectory to inherit same permission
 add the -R flag to the command 
 
 hence commands becomes  setfacl -Rm g:groupname:rwx /path/to/file
+
+III. To remove the ACL from a specific user
+setfacl -x u:user: /path/to/file
+
+IV. To remove all entries
+setfacl -b /opath/to/file
+
+As you assign acl to a file/directory a plus sign is added to the end of the permission
