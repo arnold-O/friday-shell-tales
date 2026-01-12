@@ -103,3 +103,13 @@ Number           Permission Type              symbol
 6                  Read + Write                rw-
 7                  Read + write + Execute      rwx
 
+ACCESS CONTROL LIST
+
+This is another layer that runs on top of our native permissions mentioned above.
+The commands to assign and remove ACL permissions are 
+setfacl
+getfacl
+
+The setfacl helps in setting this extra layer of permission while,
+The getfacl helps you to know the acl permission already on it.
+
