@@ -31,7 +31,7 @@ For example a user by name testuser create a file file/directory by default this
 But this can be changed manually as we will see as this series progresses.
 
 
-Use of CHOWN
+Use of chown
 
 chown == stands for change ower/ownership
 This commands acts as in two in one; used to change the owner of a file/dir as well as change the group the file/dir belongs to.
@@ -57,3 +57,16 @@ execute   | cd        | Run    |    1
 
 
 The Read permission is quite tricky as user with read on a directory can list the content on the directory bur can only read the content on that directory if the files or content on the directory permssion is correct, that is to say the read on a directory only list the content and reasding its content is purely the permissions on the content.
+
+
+Permission Using Mumeric Mode
+
+Just like the table above, numeric values can be used to set the permission on a file.
+Some persons get it confuse but the actual numbers are from 0 - 7, but on a higher lever it is just 4 2 1 all adding up to 7.
+
+So if you get a number other than those 3 number , the permission is broken down to the 3 numbers.
+
+for example these numbers that are not 4 2 1 are broken into  4 2 1.
+
+
+
