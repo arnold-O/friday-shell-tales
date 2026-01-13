@@ -133,4 +133,18 @@ setfacl -x u:user: /path/to/file
 IV. To remove all entries
 setfacl -b /opath/to/file
 
-As you assign acl to a file/directory a plus sign is added to the end of the permission
+As you assign acl to a file/directory a plus sign is added to the end of the permission.
+
+
+Using the chmod for permission  ( To know more about chmod  run man chmod to know more )
+
+Examples of using u:g:o:a to change permissions
+
+1. Give the owner full access:
+chmod u+rwx <path/to/file>
+
+2. Give the group read and write access:
+chmod g+rw <path/to/file>
+
+3. Give others only read access:
+chmod o+r file.txt
