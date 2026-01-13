@@ -155,6 +155,13 @@ u:bob:rw → give Bob read + write
 
 file.txt = target file
 
+i. Give a specific group permission
+setfacl -m g:devs:r file.txt
+g:devs:r → all members of devs group get read permission
+
+ii. Remove ACL for a user
+setfacl -x u:bob file.txt
+
 
 
 
