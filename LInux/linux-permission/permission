@@ -148,3 +148,12 @@ chmod g+rw <path/to/file>
 
 3. Give others only read access:
 chmod o+r file.txt
+
+4. Give everyone execute permission:
+chmod a+x script.sh
+
+5. Remove write permission from everyone:
+chmod a-w file.txt
+
+6. Apply all permission entities in one goal:
+chmod u+rwx,g+rx,o-rwx backup.sh
