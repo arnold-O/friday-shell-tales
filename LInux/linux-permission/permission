@@ -135,6 +135,30 @@ setfacl -b /opath/to/file
 
 As you assign acl to a file/directory a plus sign is added to the end of the permission.
 
+When you use getfacl on a file , let say file.txt, the output looks like;
+
+# file: file.txt
+# owner: alice
+# group: staff
+user::rw-
+user:bob:r--
+group::r--
+mask::r--
+other::---
+
+Example of giving a specific user permission using ACL;
+setfacl -m u:bob:rw file.txt
+
+-m = modify ACL
+
+u:bob:rw → give Bob read + write
+
+file.txt = target file
+
+
+
+
+
 
 Using the chmod for permission  ( To know more about chmod  run man chmod to know more )
 
