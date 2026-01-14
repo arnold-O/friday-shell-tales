@@ -198,3 +198,6 @@ Directories start from 777
 
 Final permissions = Base − umask
 
+
+examples of umask 
+0002 the files get u=rw-, u=rw-, o=r--
