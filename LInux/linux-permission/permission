@@ -164,9 +164,6 @@ setfacl -x u:bob file.txt
 
 
 
-
-
-
 Using the chmod for permission  ( To know more about chmod  run man chmod to know more )
 
 Examples of using u:g:o:a to change permissions
@@ -188,3 +185,16 @@ chmod a-w file.txt
 
 6. Apply all permission entities in one goal:
 chmod u+rwx,g+rx,o-rwx backup.sh
+
+umask (user file-creation mode mask)
+
+For 
+
+umask defines which permissions are removed when files or directories are created:
+
+Files start from 666
+
+Directories start from 777
+
+Final permissions = Base − umask
+
