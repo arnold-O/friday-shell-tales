@@ -20,15 +20,15 @@ These permission enttities are represented as
 
 add a file here 
 
- id <username>
-  from our user-creation series this gives us the user and it group and id.
+The id <username> command, from our user-creation series, displays a user’s UID, GID, and group memberships.
 
-The primary group of a user is by default the name of the group usered when a file/dir is created this can be changed.
+By default, a user’s primary group is the group assigned when the user is created. When a user creates a file or directory, that primary group is automatically set as the group owner of the newly created file or directory.
 
-For example a user by name testuser create a file file/directory by default this user becomes the owner and group ownwer of the file been created.
+For example, when a user named testuser creates a file or directory, testuser becomes both the owner and the group owner of that file by default.
 
--- show file screenshot here
-But this can be changed manually as we will see as this series progresses.
+— show file screenshot here —
+
+This behavior is not fixed and can be changed manually, as we will explore later in this series.as this series progresses.
 
 
 Use of chown
@@ -199,5 +199,5 @@ Directories start from 777
 Final permissions = Base − umask
 
 
-examples of umask 
+Examples of umask 
 0002 the files get u=rw-, u=rw-, o=r--
