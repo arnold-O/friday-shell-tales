@@ -15,8 +15,8 @@ These permission enttities are represented as
  We have a hyphen or dash to represent ths for each file for:
 
  user - - -  the three hyphen to be filled with R W x
- group - - - the same with R W x
- other - - -  same as above with R W x
+ group - - - the same with r w x
+ other - - -  same as above with r w x
 
 add a file here 
 
@@ -33,27 +33,39 @@ This behavior is not fixed and can be changed manually, as we will explore later
 
 Use of chown
 
-chown == stands for change ower/ownership
-This commands acts as in two in one; used to change the owner of a file/dir as well as change the group the file/dir belongs to.
+chown stands for change owner/ownership. This command is used to change the owner of a file or directory, and it can also be used to change the group ownership at the same time. to.
 
 For example:
 chown <testuser1> <file/directoy>
 
-this above command changes the owner of his directory or file to testuser1. As earlier mention to user this command to change the owner and the group simultaneously we use the colon sepearator as seen below
+The command above changes the owner of the specified file or directory to testuser1.
+
+As mentioned earlier, chown can modify both the owner and the group simultaneously by using a colon (:) as a separator, as shown below:
 
 chown testuser:<groupname>  <file/directory>
 
-this above command changes the file or directory to ownwer testuser and group to groupname used. in this command the -R can be added to make the command recursive as againt making sure what ever is inside the dirtory follows suit with the ownership.
-Though chown works to change the ownwer of file and group ownwershipbut ther e is a dedicated command to change the group ownership and that is chgrp. And again to chnage the group alone with owner of file the commands becomes
+This command changes the ownership of a file or directory to the specified user (testuser) and group (groupname). Adding the `-R` flag makes the command recursive, ensuring that all files and subdirectories within the specified directory inherit the same ownership.
 
-chown :<groupname>  <file/directory>
+While `chown` is used to change both the owner and group of a file, there is a dedicated command for changing only the group ownership: `chgrp`. To change the group ownership alone, the command becomes:
 
-he permission table and the meaning for files and directory
+```bash
+chgrp <groupname> <file/directory>
+```
 
-          | Directory | File   |Numerical values
-   List   | list      |  open  |    4
-   write  | create/del| modify |    2
-execute   | cd        | Run    |    1
+If you want to change both the owner and group at the same time, you can use `chown` with the following syntax:
+
+```bash
+chown <owner>:<groupname> <file/directory>
+```
+
+
+The permission table and the meaning for files and directories:
+
+| Action   | Directory       | File       | Numerical Value |
+|----------|-----------------|------------|-----------------|
+| Read     | List contents   | Open file  | 4               |
+| Write    | Create/Delete   | Modify     | 2               |
+| Execute  | Enter directory | Run file   | 1               |
 
 
 The Read permission is quite tricky as user with read on a directory can list the content on the directory bur can only read the content on that directory if the files or content on the directory permssion is correct, that is to say the read on a directory only list the content and reasding its content is purely the permissions on the content.
@@ -198,6 +210,8 @@ Directories start from 777
 
 Final permissions = Base − umask
 
+Examples of `umask`:
 
-Examples of umask 
-0002 the files get u=rw-, u=rw-, o=r--
+- `0002`: Files get `u=rw-, g=rw-, o=r--`.
+- `0022`: Files get `u=rw-, g=r--, o=r--`.
+
