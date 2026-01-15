@@ -116,39 +116,59 @@ Number           Permission Type              symbol
 6                  Read + Write                rw-
 7                  Read + write + Execute      rwx
 
-ACCESS CONTROL LIST
 
-This is another layer that runs on top of our native permissions mentioned above.
-The commands to assign and remove ACL permissions are 
-setfacl
-getfacl
+Access Control Lists (ACL)
 
-The setfacl helps in setting this extra layer of permission while,
-The getfacl helps you to know the acl permission already on it.
+Access Control Lists (ACLs) provide an additional layer of permissions on top of the standard Linux file and directory permissions.
+
+The commands used to manage ACL permissions are:
+
+setfacl — used to assign or modify ACL permissions
+
+getfacl — used to view the ACL permissions currently applied to a file or directory
+
+setfacl allows you to configure this extra layer of access control, while getfacl helps you inspect the existing ACL settings.
 
 
-Setting up ACL
+Setting Up ACLs
 
-I. To add a permission  to a user
-setfacl -m u:username:rwx /path-to/file
+I. Add permissions for a specific user
 
-II. To add a permission  to a group
-setfacl -m g:groupname:rwx /path-to/file
+setfacl -m u:username:rwx /path/to/file
 
-To allow the subdirectory to inherit same permission
-add the -R flag to the command 
 
-hence commands becomes  setfacl -Rm g:groupname:rwx /path/to/file
+This command grants read, write, and execute permissions to the specified user on the file or directory.
 
-III. To remove the ACL from a specific user
-setfacl -x u:user: /path/to/file
+II. Add permissions for a specific group
 
-IV. To remove all entries
-setfacl -b /opath/to/file
+setfacl -m g:groupname:rwx /path/to/file
 
-As you assign acl to a file/directory a plus sign is added to the end of the permission.
 
-When you use getfacl on a file , let say file.txt, the output looks like;
+This command assigns read, write, and execute permissions to the specified group.
+
+To apply the same permissions recursively to all subdirectories and files, use the -R flag:
+
+setfacl -Rm g:groupname:rwx /path/to/file
+
+
+III. Remove ACL permissions for a specific user
+
+setfacl -x u:username /path/to/file
+
+
+This removes the ACL entry for the specified user.
+
+IV. Remove all ACL entries
+
+setfacl -b /path/to/file
+
+
+This clears all ACL permissions from the file or directory.
+
+
+When you assign an ACL to a file or directory, a plus sign (+) is added at the end of the permission bits when viewed with ls -l. This indicates that extended ACLs are applied.
+
+When you run getfacl on a file—for example, file.txt—the output may look like this:
 
 # file: file.txt
 # owner: alice
@@ -159,21 +179,31 @@ group::r--
 mask::r--
 other::---
 
-Example of giving a specific user permission using ACL;
+
+Example: Granting permissions to a specific user using ACL
+
 setfacl -m u:bob:rw file.txt
 
--m = modify ACL
 
-u:bob:rw → give Bob read + write
+-m → modifies the ACL
 
-file.txt = target file
+u:bob:rw → grants Bob read and write permissions
 
-i. Give a specific group permission
+file.txt → the target file
+
+i. Grant permissions to a specific group
+
 setfacl -m g:devs:r file.txt
-g:devs:r → all members of devs group get read permission
 
-ii. Remove ACL for a user
+
+g:devs:r → grants read permission to all members of the devs group
+
+ii. Remove ACL permissions for a specific user
+
 setfacl -x u:bob file.txt
+
+
+This command removes the ACL entry for user bob.
 
 
 
@@ -201,7 +231,7 @@ chmod u+rwx,g+rx,o-rwx backup.sh
 
 umask (user file-creation mode mask)
 
-For 
+UMASK
 
 umask defines which permissions are removed when files or directories are created:
 
