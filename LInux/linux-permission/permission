@@ -71,29 +71,30 @@ The permission table and the meaning for files and directories:
 The Read permission is quite tricky as user with read on a directory can list the content on the directory bur can only read the content on that directory if the files or content on the directory permssion is correct, that is to say the read on a directory only list the content and reasding its content is purely the permissions on the content.
 
 
-Permission Using Mumeric Mode
 
-Just like the table above, numeric values can be used to set the permission on a file.
-Some persons get it confuse but the actual numbers are from 0 - 7, but on a higher lever it is just 4 2 1 all adding up to 7.
+**Permission Using Numeric Mode**
 
-So if you get a number other than those 3 number , the permission is broken down to the 3 numbers.
+As shown in the table above, numeric values are used to set permissions on a file. These values range from 0 to 7, representing combinations of read (4), write (2), and execute (1) permissions. The sum of these values determines the permission level.
 
-for example these numbers that are not 4 2 1 are broken into  4 2 1.
+For example:
+- `4` (read)
+- `2` (write)
+- `1` (execute)
 
-Numeric mode Usage 
+If a number other than 4, 2, or 1 is used, it is broken down into these components. For instance, `7` is the sum of `4 + 2 + 1`, meaning read, write, and execute permissions are granted.
 
-The usage of numeric mode to change permission on file is tricky.
+**Numeric Mode Usage**
 
-if we have  chmod 767 <filename>
+The numeric mode assigns permissions to three entities: user, group, and others. For example:
 
-each value represent user, group and other; the three entities associated with permission.
+```bash
+chmod 767 <filename>
+```
 
-like I earlier started when the number is not in the values of 4 2 1 the approach is different.
-
-In this case:
-user == 7  this further translate to 4 + 2 + 1 = 7; hence for this file user has rwx
-group == 6 this further translate to 4 + 2  = 6; hence for this file group has rw-
-other == 7  this further translate to 4 + 2 + 1 = 7; hence for this file user has rwx
+Here:
+- `7` (user) = `4 + 2 + 1` → `rwx` (read, write, execute)
+- `6` (group) = `4 + 2` → `rw-` (read, write)
+- `7` (others) = `4 + 2 + 1` → `rwx` (read, write, execute)
 
 
 Another example : if we have  chmod 325 <filename>
