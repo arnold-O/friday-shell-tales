@@ -40,7 +40,7 @@ For example, a test user named testuser has been created, and its home directory
 
 ![create user](image-3.png)
 
-![user in home directory](image-2.png)
+![user in home directory](LInux/user-creation/images/image-2.png)
 
 
 When we navigate to a user’s home directory, some files are hidden by default and are not displayed with the standard ls command. To view these files, we can use the -a flag with ls, which shows all files, including hidden ones.
