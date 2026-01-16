@@ -1,4 +1,4 @@
-**Understanding ownership**
+**Understanding ownership(permission)**
 
 Every file have three ( 3 ) entities that can be used to set the permissions/ownership, these entities are "user", "group" and "other"
 
