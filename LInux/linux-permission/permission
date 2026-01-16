@@ -58,7 +58,6 @@ If you want to change both the owner and group at the same time, you can use `ch
 chown <owner>:<groupname> <file/directory>
 ```
 
-
 The permission table and the meaning for files and directories:
 
 | Action   | Directory       | File       | Numerical Value |
@@ -69,8 +68,6 @@ The permission table and the meaning for files and directories:
 
 
 The Read permission is quite tricky as user with read on a directory can list the content on the directory bur can only read the content on that directory if the files or content on the directory permssion is correct, that is to say the read on a directory only list the content and reasding its content is purely the permissions on the content.
-
-
 
 **Permission Using Numeric Mode**
 
@@ -202,9 +199,7 @@ ii. Remove ACL permissions for a specific user
 
 setfacl -x u:bob file.txt
 
-
 This command removes the ACL entry for user bob.
-
 
 
 Using the chmod for permission  ( To know more about chmod  run man chmod to know more )
@@ -246,3 +241,40 @@ Examples of `umask`:
 - `0002`: Files get `u=rw-, g=rw-, o=r--`.
 - `0022`: Files get `u=rw-, g=r--, o=r--`.
 
+
+
+
+
+
+
+File Permission Issue Scenerio 
+
+I handled a client issue involving incorrect file permissions affecting five users on a Linux production server. While the issue initially appeared simple, it turned out to be more nuanced and carried security implications.
+
+**Initial Symptoms**
+Multiple users experienced Permission denied errors
+Users were unable to access files within their home directories
+Access behavior appeared inconsistent across users
+
+
+**Investigation**
+A permission audit revealed that ownership and permissions were incorrectly applied from the root (/) directory down to each user’s home directory. This misconfiguration resulted in most users having access to files they were not originally authorized to access, introducing a potential security risk on a production system.
+The issue was likely caused by an improper recursive permission or ownership change performed earlier.
+
+**Advantage During Resolution**:
+Fortunately, root user access was available, which made delegating ownership and correcting permissions seamless and controlled. This ensured full visibility across the filesystem and allowed accurate restoration of permissions without additional access barriers.
+
+**Unexpected Behavior**
+Even after correcting ownership and permissions:
+Group-based permissions did not take effect immediately
+Users continued to experience access issues despite correct filesystem settings
+This prevented a quick resolution and made the root cause harder to identify.
+
+**Root Cause**
+The affected users had been recently added to the required group, but their active login sessions had not been refreshed.
+ Since Linux applies group membership at session initialization, the changes were not recognized until the users reloaded their sessions.
+
+**Resolution**
+Users logged out and logged back in (or opened new SSH sessions)
+Group memberships were refreshed
+Permissions functioned as expected
