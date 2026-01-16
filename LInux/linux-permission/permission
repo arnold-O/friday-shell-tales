@@ -401,19 +401,16 @@ False assumptions
 
 
 
-Summary
+Key Point
 Linux uses a hierarchical directory structure
 
-
-Permissions trickle down from parent to child
-
+Permissions trickle down from parent to chil
 
 Execute permission on directories is critical
 
 
 Higher-level directories control access to everything beneath them
 
-
 One mistake at the top can affect the entire system
 
-
+**NOTE: THe root user usage should be avoided if possible.**
