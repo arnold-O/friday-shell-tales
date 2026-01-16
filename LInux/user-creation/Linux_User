@@ -28,7 +28,7 @@ i. The figure is for clicking tab twice for more options
 ![more options](image.png)
 
 ii. This figure is for using the --help flag on a command.
-![more options](image-1.png)
+![more options](LInux/user-creation/images/image-1.png)
 
 When creating a user in Linux, we use the useradd command. This command creates the user account and, by default, also creates a home directory for the user, usually located at /home/<username>. It is important to note that the default home directory location can be modified at the time of user creation.
 
