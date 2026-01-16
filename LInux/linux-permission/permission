@@ -283,7 +283,7 @@ Permissions functioned as expected
 
 
 
-**SUMMARY**
+**Note**
 
 The Trickle-Down Effect of Linux Directories
 Linux follows a hierarchical directory structure, meaning every directory exists inside another directory, all the way up to the root directory (/).
