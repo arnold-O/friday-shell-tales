@@ -28,7 +28,7 @@ i. The figure is for clicking tab twice for more options
 ![more options](image.png)
 
 ii. This figure is for using the --help flag on a command.
-![more options](LInux/user-creation/images/image-1.png)
+![more options](image-1.png)
 
 When creating a user in Linux, we use the useradd command. This command creates the user account and, by default, also creates a home directory for the user, usually located at /home/<username>. It is important to note that the default home directory location can be modified at the time of user creation.
 
@@ -40,7 +40,7 @@ For example, a test user named testuser has been created, and its home directory
 
 ![create user](image-3.png)
 
-![user in home directory](LInux/user-creation/images/image-2.png)
+![user in home directory](image-2.png)
 
 
 When we navigate to a user’s home directory, some files are hidden by default and are not displayed with the standard ls command. To view these files, we can use the -a flag with ls, which shows all files, including hidden ones.
@@ -147,20 +147,8 @@ If a service account’s shell is changed—for example, from /sbin/nologin to /
 
 ![human users](image-8.png)
 
-
 diagrams of /etc/passwd file and /etc/shadow file
 
 ![/etc/shadow](image-9.png)
 ![/etc/passwd](image-10.png)
-
-
-
-
-
-
-
-
-
-
-
 
