@@ -44,3 +44,8 @@ Best Practices to Prevent These Issues
 Use lowercase-only usernames and group names.
 Ensure the home directory name exactly matches the username.
 Treat naming consistency as a core part of access control and system hygiene.
+
+In summary, Linux tightly binds usernames, groups, and filesystem paths through strict case sensitivity.
+Small inconsistencies in naming can quickly escalate into access failures and complex troubleshooting.
+
+Stay smooth, stay simple
