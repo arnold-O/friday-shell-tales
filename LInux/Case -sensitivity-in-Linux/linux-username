@@ -35,3 +35,12 @@ Deleting users or their primary groups can fail with errors such as “group is 
 
 Confusing ownership and access results
 Files may show the correct owner and group, yet access fails — giving the impression of a permissions issue when the root cause is actually naming inconsistency.
+
+
+**Recommendation / Solution**
+
+Best Practices to Prevent These Issues
+
+Use lowercase-only usernames and group names.
+Ensure the home directory name exactly matches the username.
+Treat naming consistency as a core part of access control and system hygiene.
