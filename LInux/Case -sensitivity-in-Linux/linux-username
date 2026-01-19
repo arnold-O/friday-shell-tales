@@ -20,3 +20,18 @@ Linux filesystems, the ext4 and xfs treat paths with different cases as distinct
 /home/appuser and /home/AppUser are two separate directories.
 
 **Secondly from the lookup level** User and group lookups rely on exact string matching. This lookup are down as against files on directory such as /etc/passwd, /etc/group, /etc/shadow. Any mismatch leads to lookup failures or unexpected behavior.
+
+
+ **Impacts Faced during User and Group Management procedure**
+
+Group permissions appear broken
+Even when a user is correctly added to a group, access to directories may still fail if applications or shell environments resolve paths using the expected lowercase home directory, while the actual directory is uppercase.
+
+Group membership changes don’t behave as expected
+Admins may add a user to a group and still see “permission denied” errors. This often leads to repeated permission changes or troubleshooting the wrong layer, when the real issue is a case mismatch.
+
+User or group cleanup failures
+Deleting users or their primary groups can fail with errors such as “group is still in use” due to lingering references tied to inconsistent naming, making account cleanup more complex than necessary.
+
+Confusing ownership and access results
+Files may show the correct owner and group, yet access fails — giving the impression of a permissions issue when the root cause is actually naming inconsistency.
