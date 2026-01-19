@@ -1,0 +1,14 @@
+ Case Sensitivity in Linux Usernames & Home Directories
+
+ Recently, I worked on a Linux issue that looked minor at first but caused unexpected user and group management problems.
+
+The username was lowercase, while the home directory used uppercase characters.
+
+Example:
+
+User: appuser
+Home directory: /home/AppUser
+
+Linux is case-sensitive by design, meaning appuser and AppUser are treated as completely different entities.
+
+**Technical Basis**
