@@ -12,3 +12,11 @@ Home directory: /home/AppUser
 Linux is case-sensitive by design, meaning appuser and AppUser are treated as completely different entities.
 
 **Technical Basis**
+
+On the technical level, I will explain this on two front;
+
+**Firstly from the filesystem level**
+Linux filesystems, the ext4 and xfs treat paths with different cases as distinct.
+/home/appuser and /home/AppUser are two separate directories.
+
+**Secondly from the lookup level** User and group lookups rely on exact string matching. This lookup are down as against files on directory such as /etc/passwd, /etc/group, /etc/shadow. Any mismatch leads to lookup failures or unexpected behavior.
