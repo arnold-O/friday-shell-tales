@@ -1,0 +1,76 @@
+Tar (Tape ARchiver) is a standard Linux/Unix utility used to archive multiple files and directories into a single file, optionally compressing the result.
+It is commonly used for system backups, application data backups, and file transfers.
+
+Tar is an archiver, not a full backup system. It does not handle scheduling, deduplication, encryption (by default), or incremental tracking automatically.
+
+Why Use tar for Backups?
+
+Widely available on all Linux distributions
+
+Preserves file permissions and ownership
+
+Supports compression (gzip, bzip2, xz, zstd)
+
+Works with pipes, SSH, and scripts
+
+Reliable for system snapshots and data archives
+
+Basic Syntax
+tar [OPTIONS] [ARCHIVE] [FILES or DIRECTORIES]
+
+
+Example:
+
+tar -cvf backup.tar /home/user/data
+
+Common Backup Commands
+Create an Archive
+tar -cvf backup.tar /path/to/data
+
+Create a Compressed Backup
+tar -czvf backup.tar.gz /path/to/data
+
+Compression	Option	Notes
+gzip	-z	Fast, common
+bzip2	-j	Smaller size, slower
+xz	-J	Best compression, slow
+zstd	--zstd	Modern, fast & efficient
+Extract a Backup
+tar -xvf backup.tar
+
+
+With compression:
+
+tar -xzvf backup.tar.gz
+
+
+Extract to a specific directory:
+
+tar -xvf backup.tar -C /restore/path
+
+List Contents (Without Extracting)
+tar -tvf backup.tar
+
+Preserving File Metadata (IMPORTANT)
+
+For system backups, always preserve ownership and permissions:
+
+sudo tar -cpvzf backup.tar.gz /etc /home
+
+Option	Meaning
+-p	Preserve permissions
+-c	Create archive
+-v	Verbose
+-f	File name
+Incremental Backups
+Create Incremental Backup
+tar -g snapshot.snar -czvf backup.tar.gz /data
+
+
+snapshot.snar tracks file changes
+
+First run = full backup
+
+Later runs = incremental backups
+
+Caveat: Loss of snapshot file breaks restore chain.
