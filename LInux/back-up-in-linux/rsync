@@ -1,0 +1,46 @@
+rsync is a fast and flexible Linux utility used to synchronize files and directories between locations.
+It is one of the most commonly used tools for incremental backups, remote backups, and mirroring data.
+
+Unlike tar or dd, rsync is file-aware and only transfers changed data, making it efficient and scalable.
+
+Why Use rsync for Backups?
+
+Incremental (copies only changes)
+
+Preserves permissions, ownership, and timestamps
+
+Supports local and remote backups (SSH)
+
+Resume interrupted transfers
+
+Efficient for large datasets
+
+Scriptable and automation-friendly
+
+Basic Syntax
+rsync [OPTIONS] SOURCE DESTINATION
+
+
+Example:
+
+rsync -av /data /backup/data
+
+Common Backup Commands
+Local Directory Backup
+rsync -av /home/user /backup/home
+
+Incremental Backup (Most Common)
+rsync -av --delete /home/user/ /backup/home/
+
+
+Keeps destination in sync
+Deletes files removed from source
+
+Remote Backup Over SSH
+rsync -avz /data user@remote:/backup/data
+
+Backup with Progress Display
+rsync -av --progress /data /backup/data
+
+Backup with Compression
+rsync -avz /data user@remote:/backup/data
