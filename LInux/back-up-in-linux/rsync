@@ -44,3 +44,12 @@ rsync -av --progress /data /backup/data
 
 Backup with Compression
 rsync -avz /data user@remote:/backup/data
+
+Option	Description
+-a	Archive mode (permissions, ownership, symlinks)
+-v	Verbose output
+-z	Compression during transfer
+--delete	Remove files at destination not in source
+--progress	Show transfer progress
+--numeric-ids	Preserve user/group IDs
+--link-dest	Create snapshot-style backups
