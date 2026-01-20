@@ -1,0 +1,26 @@
+dd is a low-level Unix/Linux utility used to copy raw data block by block from one location to another.
+It is commonly used for disk imaging, full device backups, bootloader copying, and forensic duplication.
+
+dd is extremely powerful and dangerous if misused.
+A single wrong command can permanently destroy data.
+
+What Makes dd Different?
+
+Unlike tar, dd:
+
+Works at the block/device level
+
+Copies everything, including:
+
+Filesystems
+
+Free space
+
+Deleted data
+
+Boot records
+
+Is filesystem-agnostic (ext4, xfs, NTFS, FAT, etc.)
+
+Basic Syntax
+dd if=<input> of=<output> [options]
