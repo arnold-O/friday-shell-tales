@@ -1,6 +1,6 @@
-# 🧩 Command Line Confessions: The Case of the Silent Ubuntu VM
+# Command Line Confessions: The Case of the Silent Ubuntu VM
 
-## 🧠 Overview
+## Overview
 
 This case began when a customer reported that their **Ubuntu Virtual Machine (VM)** hosted on **Microsoft Azure** suddenly refused to boot.
 The Azure portal showed the VM as **healthy**, but every attempt to start it resulted in a failure to initialize the operating system.
@@ -13,7 +13,7 @@ In this post, we’ll go through:
 
 ---
 
-## 🧰 Step 1: Pause and Protect the System
+## Step 1: Pause and Protect the System
 
 Before making any changes, we **stopped (deallocated)** the affected VM.
 
@@ -24,7 +24,7 @@ This ensures:
 
 ---
 
-## 🧩 Step 2: Build a Rescue Environment
+## Step 2: Build a Rescue Environment
 
 We created a **rescue VM** with these properties:
 
@@ -42,7 +42,7 @@ This setup allows us to mount and inspect the broken disk safely — without ris
 
 ---
 
-## 🧭 Step 3: Access the Broken System
+## Step 3: Access the Broken System
 
 SSH into the rescue VM and switch to the root user:
 
@@ -103,7 +103,7 @@ These mounts are essential for tools like `grub-install` and `update-initramfs`,
 
 ---
 
-## 🧩 Step 5: Enter the Affected System (chroot)
+## Step 5: Enter the Affected System (chroot)
 
 ```bash
 chroot /rescue
@@ -115,7 +115,7 @@ From this point onward, any command we run operates *as if* we were logged direc
 
 ---
 
-## ⚙️ Step 6: Repair the Bootloader (GRUB)
+## Step 6: Repair the Bootloader (GRUB)
 
 Within the chroot environment, we reinstalled the **GRUB bootloader**:
 
@@ -133,7 +133,7 @@ Replace `/dev/sdX` with your disk (e.g. `/dev/sdc`).
 
 ---
 
-## 🧱 Step 7: Rebuild the initramfs
+## Step 7: Rebuild the initramfs
 
 Next, we regenerated the **initramfs**, the initial RAM filesystem used during early boot:
 
@@ -172,7 +172,7 @@ umount -l /rescue
 
 Detach the repaired disk from the rescue VM, reattach it to the **original VM**, and start it again.
 
-✅ The VM booted successfully, confirming the recovery was complete.
+The VM booted successfully, confirming the recovery was complete.
 
 ---
 
@@ -186,7 +186,7 @@ After the investigation, we discovered that:
 
 ---
 
-## 🧠 Lessons Learned
+## Lessons Learned
 
 1. **“Healthy” status ≠ Healthy OS**
    Azure’s health probes focus on the hypervisor layer, not the guest OS integrity.
@@ -201,7 +201,7 @@ After the investigation, we discovered that:
 
 ---
 
-## 📚 References
+## References
 
 * [Azure Documentation: Troubleshoot Linux VM boot issues](https://learn.microsoft.com/en-us/azure/virtual-machines/troubleshooting/troubleshoot-vm-boot-linux)
 * [Ubuntu Man Pages: grub-install(8)](https://manpages.ubuntu.com/manpages/jammy/en/man8/grub-install.8.html)
