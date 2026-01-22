@@ -4,7 +4,7 @@ Extending Logical Volumes on Azure SAP Environment – Full Technical Breakdown
 
 This document provides a complete walkthrough of extending logical volumes (LVs) for a critical SAP environment running on Ubuntu in Azure, including commands, filesystem considerations, stripe/disk challenges, and lessons learned.
 
-1️⃣ Scenario Overview
+**Scenario Overview**
 
 Customer: Client A
 Environment: Azure VM, Ubuntu OS, SAP environment
@@ -20,7 +20,7 @@ Objective: Extend storage without downtime, maintain system stability, and educa
 
 The task looked simple on paper — just add space. But as always, things get interesting in real life.
 
-2️⃣ Initial Verification
+**Initial Verification**
 
 Before taking any action, we verified the current system setup:
 
@@ -42,7 +42,7 @@ Ensured we understood the volume group, logical volume, and filesystem layout.
 
 Outcome: Complete picture of VGs, LVs, mount points, and filesystem configuration achieved.
 
-3️⃣ Adding New Storage
+**Adding New Storage**
 
 New disks were provisioned in Azure via the Azure portal.
 
@@ -51,7 +51,7 @@ One disk /dev/sdn was initialized and added to the existing volume group:
 pvcreate /dev/sdn          # Initialize the disk as a physical volume
 vgextend datavg /dev/sdn   # Add the PV to the datavg volume group
 
-4️⃣ Logical Volume Extensions
+**Logical Volume Extensions**
 
 Initial LV extensions:
 
@@ -59,7 +59,7 @@ lvextend -L +30G /dev/datavg/data5
 lvextend -L +30G /dev/datavg/data8
 lvextend -L +30G /dev/datavg/data9
 
-5️⃣ Expanding XFS Filesystems
+**Expanding XFS Filesystems**
 
 Because the volumes used XFS, we could expand the filesystems at the mount point online, with zero downtime:
 
@@ -70,7 +70,7 @@ xfs_growfs /sapenv_9
 
 Key Point: XFS allows filesystem expansion at the mount point, unlike ext4 which often requires device-level resizing.
 
-6️⃣ Stripe vs Disk Challenge
+**Stripe vs Disk Challenge**
 
 The logical volume /dev/datavg/data5 was originally created with 6 stripes for improved I/O performance:
 
@@ -100,7 +100,7 @@ Suitable because workload was mostly sequential writes on HDDs
 
 Client agreed that the workload was not I/O intensive, so option 2 was selected.
 
-7️⃣ Implemented Solution
+**Implemented Solution**
 lvextend -L +30G -i1 /dev/datavg/data5
 xfs_growfs /sapenv_5
 
@@ -113,7 +113,7 @@ No downtime
 
 System stability maintained
 
-8️⃣ LVM Education Moment
+**LVM Education Moment**
 
 During the session, we discovered that the virtual machine's OS disk was not LVM-based (Ubuntu standard partition layout).
 
@@ -129,14 +129,15 @@ Converting root partition to LVM is possible but risky in production.
 
 Outcome: Client understood the limitation and safe alternatives.
 
-9️⃣ Concept Recap
+**Concept Recap**
 Concept	Explanation
 PV (Physical Volume)	Actual disks or partitions (e.g., /dev/sdn)
 VG (Volume Group)	Pool combining multiple PVs (e.g., datavg)
 LV (Logical Volume)	Logical unit carved out from VG
 Striping (-i)	Distributes data across multiple PVs for performance
 XFS (xfs_growfs)	Expands filesystem at mount point online
-10️⃣ Command Reference
+
+**Command Reference**
 Command	Description
 lvextend -L +30G /dev/datavg/data5 ==	Extend LV by 30 GB
 lvextend -L +30G /dev/datavg/data8 ==	Extend LV by 30 GB
@@ -154,7 +155,7 @@ vgs ==	Show volume groups
 lvs ==	Show logical volumes
 lvdisplay / vgdisplay ==	Detailed info on LV/VG
 
-1️⃣ Key Takeaways
+**Key Takeaways**
 
 Azure platform allows flexible disk provisioning and expansion.
 
