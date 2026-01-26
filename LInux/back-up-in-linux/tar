@@ -3,20 +3,40 @@ It is commonly used for system backups, application data backups, and file trans
 
 Tar is an archiver, not a full backup system. It does not handle scheduling, deduplication, encryption (by default), or incremental tracking automatically.
 
-Why Use tar for Backups?
 
-Widely available on all Linux distributions
 
-Preserves file permissions and ownership
+**Usage of tar**
 
-Supports compression (gzip, bzip2, xz, zstd)
+Most importantly the use of this file require you specify the -c for the creation and -f for the file  name that will be outputted 
 
-Works with pipes, SSH, and scripts
+tar  -cf <outputfile_name>  <file_to_backup>
 
-Reliable for system snapshots and data archives
+tar by default does not do compression, if compression is needed  tar has support for bzip and gzip and frequently used is gzip
+For adding this extra utiliy we call it in the options and the command becomes.
 
-Basic Syntax
-tar [OPTIONS] [ARCHIVE] [FILES or DIRECTORIES]
+tar -czf <name_of_file>.tar.gzip <file_to_backup> for convention purposes we add .tar and .gzip to show the tar utility was used and was compressed with gzip.
+
+Note: the f in the options should be last in the options, as after the f is the filename and the "v" can be added for verbose purposes.
+
+
+**Extracting**
+tar -xzf <the_backup_file/file_path_to_the_file>
+This help extract the file back
+
+There is a command line command by default for backup cases like this it helps preserve permissions of files that have been compressed but this is different from distro to distro, so it wise to add that option manually.
+
+In thhe explaination above the tar command and it options sees a "p" been added to the command.
+
+tar -czpf <name_of_file>.tar.gzip <file_to_backup>
+
+
+
+
+
+
+
+
+
 
 
 Example:
