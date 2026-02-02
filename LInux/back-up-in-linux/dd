@@ -30,3 +30,6 @@ dd really shines and is able to get the bare image of a disk.
 dd if=/dev/sda  of=/mnt/storage/sda.img
 
 what the above commands means is that we are cloning sda to /storage/sda.img ; clloning the entire size of sda, this might take some time and probably if there are read and writes it might be affected depending on were dd is at, the time of the operation.
+
+++++When we need to see progressof the operations kindly add **status=progress**
+++++To increase speed of transfer we add the option bs=1M; this is saying grab 1 megabytes a second
