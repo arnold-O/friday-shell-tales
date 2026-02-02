@@ -4,7 +4,6 @@ It is commonly used for system backups, application data backups, and file trans
 Tar is an archiver, not a full backup system. It does not handle scheduling, deduplication, encryption (by default), or incremental tracking automatically.
 
 
-
 **Usage of tar**
 
 Most importantly the use of this file require you specify the -c for the creation and -f for the file  name that will be outputted 
@@ -19,6 +18,9 @@ tar -czf <name_of_file>.tar.gzip <file_to_backup> for convention purposes we add
 Note: the f in the options should be last in the options, as after the f is the filename and the "v" can be added for verbose purposes.
 
 
+
+
+
 **Extracting**
 tar -xzf <the_backup_file/file_path_to_the_file>
 This help extract the file back
@@ -28,8 +30,6 @@ There is a command line command by default for backup cases like this it helps p
 In thhe explaination above the tar command and it options sees a "p" been added to the command.
 
 tar -czpf <name_of_file>.tar.gzip <file_to_backup>
-
-
 
 
 

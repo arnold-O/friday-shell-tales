@@ -6,9 +6,7 @@ A single wrong command can permanently destroy data.
 
 What Makes dd Different?
 
-Unlike tar, dd:
-
-Works at the block/device level
+Unlike tar, dd Works at the block/device level
 
 Copies everything, including:
 
@@ -24,3 +22,11 @@ Is filesystem-agnostic (ext4, xfs, NTFS, FAT, etc.)
 
 Basic Syntax
 dd if=<input> of=<output> [options]
+
+dd actual meaning is copy and convert; it could copy a disk and convert it as well It stands for 'Copy and Convert' and was renamed to dd only because cc was reserved for the C compiler!.
+dd really shines and is able to get the bare image of a disk.
+
+**USAGE**
+dd if=/dev/sda  of=/mnt/storage/sda.img
+
+what the above commands means is that we are cloning sda to /storage/sda.img ; clloning the entire size of sda, this might take some time and probably if there are read and writes it might be affected depending on were dd is at, the time of the operation.
