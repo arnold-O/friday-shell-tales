@@ -1,0 +1,12 @@
+Logical Volume Management (LVM) is a device mapper framework that allows flexible disk management in Linux. Unlike traditional partitions, LVM abstracts physical disks into logical volumes, providing dynamic resizing, snapshots, and easier disk management.
+
+Key components:
+
+PV (Physical Volume):
+A physical disk or partition initialized for LVM (pvcreate /dev/sdX)
+
+VG (Volume Group)	
+Pool of storage consisting of one or more PVs (vgcreate vg_name /dev/sdX)
+
+LV (Logical Volume)	
+Logical disk carved out from a VG (lvcreate -L 20G -n lv_name vg_name)
