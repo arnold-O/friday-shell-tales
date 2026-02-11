@@ -68,3 +68,43 @@ XFS:
 xfs_growfs /mnt/data
 
 
+
+Reducing LVM
+
+Shrinking is only safe for ext4. XFS cannot shrink; data must be backed up and LV recreated.
+
+Reducing ext4 LV
+
+Check filesystem:
+e2fsck -f /dev/vg_data/lv_data
+
+Shrink filesystem:
+resize2fs /dev/vg_data/lv_data 30G
+
+
+Shrink LV:
+lvreduce -L 30G /dev/vg_data/lv_data
+
+Mount and verify:
+mount /dev/vg_data/lv_data /mnt/data
+df -h
+
+Reducing XFS LV
+Backup data:
+rsync -av /mnt/data/ /backup/location/
+
+Remove LV:
+lvremove /dev/vg_data/lv_data
+
+
+Create smaller LV:
+lvcreate -L 30G -n lv_data vg_data
+
+
+Create XFS filesystem:
+mkfs.xfs /dev/vg_data/lv_data
+mount /dev/vg_data/lv_data /mnt/data
+
+
+Restore data:
+rsync -av /backup/location/ /mnt/data/
