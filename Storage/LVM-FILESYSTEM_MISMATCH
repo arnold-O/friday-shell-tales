@@ -108,3 +108,20 @@ mount /dev/vg_data/lv_data /mnt/data
 
 Restore data:
 rsync -av /backup/location/ /mnt/data/
+
+
+Managing LVM
+
+List all logical volumes:
+lvs
+
+
+List all volume groups:
+vgs
+
+List all physical volumes:
+pvs
+
+
+Display detailed info:
+lvdisplay / vgdisplay / pvdisplay
