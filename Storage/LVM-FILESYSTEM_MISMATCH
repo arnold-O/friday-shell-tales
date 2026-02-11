@@ -10,3 +10,24 @@ Pool of storage consisting of one or more PVs (vgcreate vg_name /dev/sdX)
 
 LV (Logical Volume)	
 Logical disk carved out from a VG (lvcreate -L 20G -n lv_name vg_name)
+
+Creating LVM
+
+Step 1:: Initialize Physical Volumes
+pvcreate /dev/sdb   # Initialize Physical Volumes
+pvdisplay           # checks the physical volumes info
+
+
+step 2:: Create a Volume Group
+vgcreate vg_data /dev/sdb    #create volume group and add the physical volume create in step one
+vgdisplay vg_data             # checks the volume group info
+
+
+step 3:: Create Logical Volumes
+
+3i. Create a fixed size LV:
+
+lvcreate -L 50G -n lv_data vg_data           #create logical volume from volume group with a specific size
+3ii. Create an LV using all free space:
+
+lvcreate -l 100%FREE -n lv_data vg_data       # #create logical volume from volume group with entire space available
