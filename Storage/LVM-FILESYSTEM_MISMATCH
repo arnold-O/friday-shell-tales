@@ -125,3 +125,65 @@ pvs
 
 Display detailed info:
 lvdisplay / vgdisplay / pvdisplay
+
+
+
+**Client scenerio**
+
+Step 1 Check what filesystem you use
+
+Run:
+lsblk -f
+
+
+Look at your LV and note if it is ext4 or xfs.
+
+ext4 → can be shrunk
+
+xfs → CANNOT be shrunk (you must back up, recreate, and restore)
+
+
+Step 2 — Unmount the filesystem (required for ext4 shrinking)
+
+Example:
+
+umount /dev/vg_name/lv_name
+
+If this is your root (/) filesystem, you must boot from a live USB or rescue mode (chroot approach).
+
+Step 3 — Check filesystem
+e2fsck -f /dev/vg_name/lv_name
+
+Step 4 Shrink the filesystem first
+
+Example: shrink to 50G
+
+resize2fs /dev/vg_name/lv_name 50G
+
+Step 5 — Now shrink the logical volume
+
+Match the same size: ( we shrink to 50G , so shrink the logica volume to 50G)
+
+lvreduce -L 50G /dev/vg_name/lv_name
+
+You will be asked to confirm — type y.
+
+Step 6  Mount again
+mount /dev/vg_name/lv_name /mountpoint
+
+
+Check size:
+
+df -h
+
+If your filesystem is xfs
+
+You cannot shrink it directly. You must:
+
+Back up data
+
+Delete the LV
+
+Create a smaller LV
+
+Restore data
