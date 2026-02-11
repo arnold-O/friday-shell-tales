@@ -43,3 +43,28 @@ XFS     #High-performance, designed for large filesystems :: Shrinking: not poss
 mkfs.xfs /dev/vg_data/lv_data
 mount /dev/vg_data/lv_data /mnt/data
 
+
+Resizing LVM
+
+Extending LVM
+
+Check free space in the VG:
+vgdisplay vg_data
+
+Extend the LV:
+lvextend -L +20G /dev/vg_data/lv_data
+
+Or use all free space:
+
+lvextend -l +100%FREE /dev/vg_data/lv_data
+
+
+Resize filesystem:
+
+ext4:
+resize2fs /dev/vg_data/lv_data
+
+XFS:
+xfs_growfs /mnt/data
+
+
