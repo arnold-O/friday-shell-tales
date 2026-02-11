@@ -26,8 +26,20 @@ vgdisplay vg_data             # checks the volume group info
 step 3:: Create Logical Volumes
 
 3i. Create a fixed size LV:
-
 lvcreate -L 50G -n lv_data vg_data           #create logical volume from volume group with a specific size
-3ii. Create an LV using all free space:
 
-lvcreate -l 100%FREE -n lv_data vg_data       # #create logical volume from volume group with entire space available
+3ii. Create an LV using all free space:
+lvcreate -l 100%FREE -n lv_data vg_data       # #create logical volume from volume group with entire space available.
+
+
+Choosing the Filesystem
+
+ext4  # This , supports shrinking and growing :: Shrinking: possible with e2fsck and resize2fs.
+mkfs.ext4 /dev/vg_data/lv_data
+mount /dev/vg_data/lv_data /mnt/data
+
+
+XFS     #High-performance, designed for large filesystems :: Shrinking: not possible; only growing is supported (xfs_growfs). Requires backup → recreate → restore for size reduction
+mkfs.xfs /dev/vg_data/lv_data
+mount /dev/vg_data/lv_data /mnt/data
+
