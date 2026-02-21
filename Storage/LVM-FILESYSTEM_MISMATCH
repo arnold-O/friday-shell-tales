@@ -1,0 +1,189 @@
+Logical Volume Management (LVM) is a device mapper framework that allows flexible disk management in Linux. Unlike traditional partitions, LVM abstracts physical disks into logical volumes, providing dynamic resizing, snapshots, and easier disk management.
+
+Key components:
+
+PV (Physical Volume):
+A physical disk or partition initialized for LVM (pvcreate /dev/sdX)
+
+VG (Volume Group)	
+Pool of storage consisting of one or more PVs (vgcreate vg_name /dev/sdX)
+
+LV (Logical Volume)	
+Logical disk carved out from a VG (lvcreate -L 20G -n lv_name vg_name)
+
+Creating LVM
+
+Step 1:: Initialize Physical Volumes
+pvcreate /dev/sdb   # Initialize Physical Volumes
+pvdisplay           # checks the physical volumes info
+
+
+step 2:: Create a Volume Group
+vgcreate vg_data /dev/sdb    #create volume group and add the physical volume create in step one
+vgdisplay vg_data             # checks the volume group info
+
+
+step 3:: Create Logical Volumes
+
+3i. Create a fixed size LV:
+lvcreate -L 50G -n lv_data vg_data           #create logical volume from volume group with a specific size
+
+3ii. Create an LV using all free space:
+lvcreate -l 100%FREE -n lv_data vg_data       # #create logical volume from volume group with entire space available.
+
+
+Choosing the Filesystem
+
+ext4  # This , supports shrinking and growing :: Shrinking: possible with e2fsck and resize2fs.
+mkfs.ext4 /dev/vg_data/lv_data
+mount /dev/vg_data/lv_data /mnt/data
+
+
+XFS     #High-performance, designed for large filesystems :: Shrinking: not possible; only growing is supported (xfs_growfs). Requires backup → recreate → restore for size reduction
+mkfs.xfs /dev/vg_data/lv_data
+mount /dev/vg_data/lv_data /mnt/data
+
+
+Resizing LVM
+
+Extending LVM
+
+Check free space in the VG:
+vgdisplay vg_data
+
+Extend the LV:
+lvextend -L +20G /dev/vg_data/lv_data
+
+Or use all free space:
+
+lvextend -l +100%FREE /dev/vg_data/lv_data
+
+
+Resize filesystem:
+
+ext4:
+resize2fs /dev/vg_data/lv_data
+
+XFS:
+xfs_growfs /mnt/data
+
+
+
+Reducing LVM
+
+Shrinking is only safe for ext4. XFS cannot shrink; data must be backed up and LV recreated.
+
+Reducing ext4 LV
+
+Check filesystem:
+e2fsck -f /dev/vg_data/lv_data
+
+Shrink filesystem:
+resize2fs /dev/vg_data/lv_data 30G
+
+
+Shrink LV:
+lvreduce -L 30G /dev/vg_data/lv_data
+
+Mount and verify:
+mount /dev/vg_data/lv_data /mnt/data
+df -h
+
+Reducing XFS LV
+Backup data:
+rsync -av /mnt/data/ /backup/location/
+
+Remove LV:
+lvremove /dev/vg_data/lv_data
+
+
+Create smaller LV:
+lvcreate -L 30G -n lv_data vg_data
+
+
+Create XFS filesystem:
+mkfs.xfs /dev/vg_data/lv_data
+mount /dev/vg_data/lv_data /mnt/data
+
+
+Restore data:
+rsync -av /backup/location/ /mnt/data/
+
+
+Managing LVM
+
+List all logical volumes:
+lvs
+
+
+List all volume groups:
+vgs
+
+List all physical volumes:
+pvs
+
+
+Display detailed info:
+lvdisplay / vgdisplay / pvdisplay
+
+
+
+**Client scenerio**
+
+Step 1 Check what filesystem you use
+
+Run:
+lsblk -f
+
+
+Look at your LV and note if it is ext4 or xfs.
+
+ext4 → can be shrunk
+
+xfs → CANNOT be shrunk (you must back up, recreate, and restore)
+
+
+Step 2 — Unmount the filesystem (required for ext4 shrinking)
+
+Example:
+
+umount /dev/vg_name/lv_name
+
+If this is your root (/) filesystem, you must boot from a live USB or rescue mode (chroot approach).
+
+Step 3 — Check filesystem
+e2fsck -f /dev/vg_name/lv_name
+
+Step 4 Shrink the filesystem first
+
+Example: shrink to 50G
+
+resize2fs /dev/vg_name/lv_name 50G
+
+Step 5 — Now shrink the logical volume
+
+Match the same size: ( we shrink to 50G , so shrink the logica volume to 50G)
+
+lvreduce -L 50G /dev/vg_name/lv_name
+
+You will be asked to confirm — type y.
+
+Step 6  Mount again
+mount /dev/vg_name/lv_name /mountpoint
+
+
+Check size:
+
+df -h
+
+If your filesystem is xfs
+
+You cannot shrink it directly. You must:
+
+Back up data
+
+Delete the LV
+
+Create a smaller LV
+
+Restore data
