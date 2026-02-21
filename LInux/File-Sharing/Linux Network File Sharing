@@ -1,0 +1,212 @@
+Linux Network File Sharing Guide
+
+A practical guide to transferring files across a network in Linux using scp and Samba.
+
+In most real-world environments, machines are connected through a network. Whether you're working at home, in a lab, or in a corporate infrastructure, knowing how to securely move and share files between systems is a foundational Linux skill.
+
+This repository covers:
+
+  Secure file transfers using scp
+
+  Cross-platform file sharing using Samba (SMB/CIFS)
+
+  Mounting remote shares as local directories
+
+Table of Contents
+
+  Overview
+
+  Using SCP (Secure Copy)
+
+  Syntax
+
+ Examples
+
+Using Samba for Cross-Platform Sharing
+
+  What is Samba?
+
+  Installation
+
+  Configuring a Share
+
+  Managing the Service
+
+  Accessing the Share
+
+  Mounting a Samba Share
+
+
+Overview
+
+When transferring files between Linux systems on the same network, you have two main approaches:
+
+Direct file transfer (one-time or occasional transfers)
+
+Shared directories (persistent access)
+
+For direct transfers, we use scp.
+
+For shared directories across Linux, Windows, and macOS, we use Samba.
+
+Using SCP (Secure Copy)
+
+scp stands for Secure Copy. It allows you to transfer files securely between hosts over SSH.
+
+It behaves similarly to the cp command, but supports remote destinations.
+
+  Because it runs over SSH:
+
+  Transfers are encrypted
+
+  Authentication uses SSH credentials
+
+  No additional services are required beyond SSH
+
+Syntax
+scp [options] source destination
+
+Remote paths use this format:
+
+username@remote_host:/path/to/file
+
+Examples
+1.  Copy a File from Local to Remote
+scp myfile.txt username@remotehost:/remote/directory
+
+This sends myfile.txt to the remote machine.
+
+2.  Copy a File from Remote to Local
+scp username@remotehost:/remote/directory/myfile.txt /local/directory
+
+This retrieves a file from the remote host.
+
+3.  Copy an Entire Directory
+
+Use the -r (recursive) option:
+
+scp -r mydirectory username@remotehost:/remote/directory
+Useful SCP Options
+  Option	Description
+    -r	Recursive copy (directories)
+    -P	Specify custom SSH port
+    -i	Use a specific SSH private key
+    -v	Verbose output (debugging)
+
+Example with custom SSH key:
+
+scp -i ~/.ssh/id_rsa myfile.txt user@remotehost:/path/
+Using Samba for Cross-Platform Sharing
+What is Samba?
+
+Samba is a software suite that implements the SMB protocol on Linux and Unix-like systems.
+
+SMB (Server Message Block) is the protocol used by Windows systems for file and printer sharing.
+
+Samba allows:
+
+Linux servers to share files with Windows machines
+
+Windows clients to access Linux shared folders
+
+Seamless mixed-OS environments
+
+Installations:
+
+  Debian/Ubuntu
+    sudo apt update
+    sudo apt install samba
+  RHEL/CentOS/Fedora
+    sudo dnf install samba
+
+Configuring a Share
+
+The main configuration file:
+  /etc/samba/smb.conf
+
+Open it with:
+  sudo vi /etc/samba/smb.conf
+
+Add this at the bottom:
+
+[myshare]
+   comment = My First Samba Share
+   path = /my/directory/to/share
+   read only = no
+   browsable = yes
+
+
+Create the Directory
+  sudo mkdir -p /my/directory/to/share
+
+Set permissions if needed:
+  sudo chown username:username /my/directory/to/share
+
+Add a Samba User
+
+Samba maintains a separate password database hence.
+  sudo smbpasswd -a username
+
+You will be prompted to set a Samba password.
+
+Managing the Service
+  After editing smb.conf, restart the service:
+    sudo systemctl restart smbd
+
+Check status:
+sudo systemctl status smbd
+
+Enable at boot:
+  sudo systemctl enable smbd
+
+Accessing the Share
+From Windows
+  Open Run (Win + R) or File Explorer:
+  \\HOST\myshare
+
+Replace HOST with:
+
+The Linux machine’s IP address
+
+Or hostname
+
+From Linux (CLI)
+
+Use smbclient:
+  smbclient //HOST/myshare -U username
+
+Available commands inside the prompt:
+  ls
+  get
+  put
+  exit
+
+Mounting a Samba Share
+
+To mount a Samba share permanently:
+  sudo mount -t cifs //SERVER/myshare /mnt/mountpoint -o user=username,pass=password
+
+Example:
+  sudo mkdir /mnt/shared
+  sudo mount -t cifs //192.168.1.10/myshare /mnt/shared -o user=john
+
+Note: For permanent mounting, add an entry to /etc/fstab.
+
+
+Use SSH key authentication instead of passwords for scp
+
+Restrict Samba shares to specific users
+
+Use firewall rules to limit SMB exposure
+
+Avoid exposing SMB directly to the public internet
+
+Understanding both scp and Samba gives you:
+
+Secure file transfer capabilities
+
+Cross-platform interoperability
+
+Real-world system administration skills
+
+A strong foundation for DevOps and infrastructure roles
