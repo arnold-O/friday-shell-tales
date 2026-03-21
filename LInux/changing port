@@ -1,0 +1,380 @@
+# Debugging an SSH Port Change Issue (Ubuntu on Azure)
+
+## Overview
+This document describes a troubleshooting scenario involving a client who attempted to change the default SSH port from **22** to **5050** on an Ubuntu virtual machine hosted on Azure.
+
+Although the configuration change appeared correct, the SSH service continued listening on **port 22**, causing connection attempts on **port 5050** to fail.
+
+This README documents the **client issue, reproduction process, investigation, root cause, and resolution**.
+
+---
+
+## Background
+
+Changing the default SSH port is a **basic security hardening practice**.
+
+Since **port 22 is the default SSH port**, it is commonly the **first port scanned by attackers and automated bots** performing brute-force login attempts.
+
+Moving SSH to a non-standard port (for example **5050**) does not completely eliminate attacks but can:
+
+- Reduce automated brute-force attempts
+- Reduce noise in authentication logs
+- Add an additional layer of obscurity to the service
+
+---
+
+## Client Issue
+
+The client reported that after changing the SSH port to **5050**, they were unable to connect.
+
+Attempted connection:
+
+```bash
+ssh -p 5050 azureuser@<server-ip>
+```
+
+Result:
+
+ssh: connect to host <server-ip> port 5050: Connection refused
+
+However, they confirmed the following had already been done:
+
+Updated sshd_config
+Allowed port 5050 in the firewall
+Reproducing the Issue
+
+To properly diagnose the issue, I reproduced the same setup.
+
+Step 1 — Edit SSH Configuration
+```bash
+sudo nano /etc/ssh/sshd_config
+```
+Original line:
+
+#Port 22
+
+Changed to:
+
+Port 5050
+Step 2 — Verify Configuration
+```bash
+grep Port /etc/ssh/sshd_config
+```
+
+Output:
+
+Port 5050
+#GatewayPorts no
+Step 3 — Allow Port in Firewall
+```bash
+sudo ufw allow 5050/tcp
+```
+
+Output:
+
+Skipping adding existing rule
+Skipping adding existing rule (v6)
+
+This confirmed that port 5050 was already allowed.
+
+Step 4 — Attempt Connection
+ssh -p 5050 azureuser@<server-ip>
+
+Result:
+
+Connection refused
+
+This suggested that SSH was not actually listening on port 5050.
+
+Investigation
+
+The next step was checking the SSH service status:
+```bash
+systemctl status ssh
+```
+Output:
+
+● ssh.service - OpenBSD Secure Shell server
+     Loaded: loaded (/usr/lib/systemd/system/ssh.service; disabled; preset: enabled)
+     Active: active (running)
+TriggeredBy: ● ssh.socket
+       Docs: man:sshd(8)
+             man:sshd_config(5)
+
+Mar 21 sshd: Server listening on 0.0.0.0 port 22.
+Mar 21 sshd: Server listening on :: port 22.
+
+Two important observations:
+
+SSH was still listening on port 22
+The service was TriggeredBy: ssh.socket
+Root Cause
+
+The system was using systemd socket activation.
+
+With socket activation:
+
+systemd opens the network port
+The service starts only when a connection is received
+
+In this case:
+
+ssh.socket
+
+was opening port 22, which caused the SSH daemon to ignore the port defined in sshd_config.
+
+As a result:
+
+sshd_config specified 5050
+But systemd forced port 22
+Resolution
+
+The fix was to disable the SSH socket activation.
+
+Stop the socket
+sudo systemctl stop ssh.socket
+Disable the socket
+sudo systemctl disable ssh.socket
+Restart SSH Service
+sudo systemctl restart ssh
+Verification
+
+Check the SSH service again:
+
+systemctl status ssh
+
+Now SSH starts normally without socket activation and respects the configuration defined in:
+
+/etc/ssh/sshd_config
+
+SSH is now accessible on:
+
+Port 5050
+Key Lessons
+Editing sshd_config alone may not change the SSH listening port.
+systemd socket activation can override service configuration.
+Always inspect services using:
+systemctl status <service>
+Look for:
+TriggeredBy: <service>.socket
+
+which indicates socket activation.
+
+Troubleshooting Checklist
+
+When changing SSH ports:
+
+```bash
+Update SSH configuration
+/etc/ssh/sshd_config
+Allow the new port in the firewall
+ufw allow <port>/tcp
+Restart SSH
+systemctl restart ssh
+Verify listening port
+ss -tulpn | grep ssh
+Check for socket activation
+systemctl status ssh
+```
+Final Result
+
+SSH successfully moved from:
+
+Port 22
+
+to:
+
+Port 5050
+
+while maintaining access and improving baseline security posture.
+
+
+Thank you!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+**Debugging an SSH Port Change Issue Reported by a Client (Ubuntu on Azure)**
+
+A client recently raised a concern about an issue they encountered while trying to change the default SSH port from **22** to **5050** on their Ubuntu VM hosted on Azure.
+
+Their motivation was actually a **basic but useful security practice**. Since **port 22 is the default SSH port**, it is commonly the **first port attackers scan and target for brute-force login attempts**. Moving SSH to a non-standard port (like 5050) doesn’t eliminate attacks entirely, but it **significantly reduces automated scanning and noise from bots targeting the default port**.
+
+However, even after making the change, the client was still unable to connect using port **5050** and kept getting a **“Connection refused”** error.
+
+Before proposing a fix, I decided to **reproduce the issue in a similar environment** to understand exactly what was happening.
+
+---
+
+### 🎯 Client’s Objective
+
+Move SSH from **port 22** to **port 5050** for basic security hardening.
+
+Their configuration change looked correct:
+
+```
+sudo nano /etc/ssh/sshd_config
+```
+
+They changed:
+
+```
+#Port 22
+```
+
+to:
+
+```
+Port 5050
+```
+
+Verification showed the configuration was applied:
+
+```
+grep Port /etc/ssh/sshd_config
+```
+
+Output:
+
+```
+Port 5050
+```
+
+They also confirmed the firewall rule:
+
+```
+sudo ufw allow 5050/tcp
+```
+
+So at first glance, everything appeared to be configured correctly.
+
+---
+
+### 🚨 The Issue the Client Reported
+
+Despite the configuration changes, attempting to connect resulted in:
+
+```
+ssh -p 5050 azureuser@<server-ip>
+```
+
+Error:
+
+```
+Connection refused
+```
+
+This suggested that **the SSH service was not actually listening on port 5050**.
+
+---
+
+### 🔍 Reproducing and Investigating
+
+After reproducing the setup, I checked the SSH service status:
+
+```
+systemctl status ssh
+```
+
+This part of the output immediately stood out:
+
+```
+TriggeredBy: ssh.socket
+Server listening on 0.0.0.0 port 22
+```
+
+Even though the configuration file specified **5050**, the service was **still bound to port 22**.
+
+---
+
+### 💡 Root Cause
+
+The system was using **systemd socket activation**.
+
+Instead of `sshd` opening its own listening port, **systemd was pre-opening port 22 via `ssh.socket`** and then starting the SSH service when a connection was made.
+
+Because of this, the port defined in `sshd_config` was effectively being overridden.
+
+---
+
+### 🛠 Resolution
+
+To allow SSH to respect the configuration file, the socket activation had to be disabled.
+
+```
+sudo systemctl stop ssh.socket
+sudo systemctl disable ssh.socket
+```
+
+Then restart SSH:
+
+```
+sudo systemctl restart ssh
+```
+
+After this change, the SSH service correctly bound to **port 5050**.
+
+---
+
+### 📌 Key Takeaway
+
+This case was a good reminder that when troubleshooting Linux services:
+
+* Configuration files are not always the only controlling factor.
+* **systemd socket activation can override service behavior.**
+* Checking service triggers using `systemctl status` can reveal hidden dependencies.
+* Changing the default SSH port can help **reduce automated brute-force attempts targeting port 22**.
+
+Reproducing the client’s environment helped identify the issue quickly and provide a reliable fix.
+
+---
+
+Scenarios like this highlight why **reproducing issues is often the fastest path to the root cause.**
+
+#Linux #DevOps #CloudComputing #Azure #SystemAdministration #CyberSecurity #Troubleshooting
