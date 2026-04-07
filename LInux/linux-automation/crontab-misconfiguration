@@ -1,0 +1,20 @@
+# Cron & Crontab Guide (A–Z)
+
+A  guide to **cron** and **crontab** in Linux systems.
+This README explains **what cron is, how it works, configuration options, scheduling syntax, environment behavior, and real-world usage**.
+
+
+# What is Cron
+
+**Cron** is a **time-based job scheduler** in Linux systems.
+
+It allows users to schedule commands or scripts to run automatically at specified times or intervals.
+
+Examples:
+- Daily backups
+- Log rotation
+- Database maintenance
+- System monitoring scripts
+- Automated deployments
+
+Cron runs as a **daemon service**:
