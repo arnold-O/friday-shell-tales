@@ -102,3 +102,55 @@ String              Meaning
 # EXAMPLE 
 @daily /usr/local/bin/checks.sh
 
+
+
+# Managing Crontab
+
+View current user's crontab
+```bash
+crontab -l
+```
+Edit crontab
+```bash
+crontab -e
+```
+Remove crontab
+```bash
+crontab -r
+```
+Edit crontab for another user
+```bash
+crontab -u username -e
+```
+
+
+# System Crontabs are found here
+
+file destination is /etc/crontab
+
+```bash
+cat /etc/crontab
+```
+
+
+
+You check for more info using manual pages of cron and crontab
+
+```bash 
+man cron
+```
+```bash 
+man crontab
+```
+
+
+
+
+ Example of job definition:
+# .---------------- minute (0 - 59)
+# |  .------------- hour (0 - 23)
+# |  |  .---------- day of month (1 - 31)
+# |  |  |  .------- month (1 - 12) OR jan,feb,mar,apr ...
+# |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tue,wed,thu,fri,sat
+# |  |  |  |  |
+# *  *  *  *  * user-name command to be executed
