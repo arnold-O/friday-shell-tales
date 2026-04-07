@@ -18,3 +18,26 @@ Examples:
 - Automated deployments
 
 Cron runs as a **daemon service**:
+
+
+# What is Crontab
+
+**Crontab (Cron Table)** is a file that defines scheduled jobs.
+
+Each user on a Linux system can have their own crontab file containing scheduled tasks.
+
+Cron reads these files and executes the jobs accordingly.
+
+
+Cron works with several components:
+
+|---- user crontab files
+|---- /etc/crontab
+|---- /etc/cron.d/
+|---- /etc/cron.hourly
+|---- /etc/cron.daily
+|---- /etc/cron.weekly
+|---- /etc/cron.monthly
+
+The **cron daemon** periodically scans these locations and runs jobs when schedules match.
+
