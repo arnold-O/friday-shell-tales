@@ -57,3 +57,33 @@ Hour    	      2nd *	            0–23	                    Which hour of the da
 Day of Month	  3rd *	            1–31	                    Which day of the month to run the command
 Month	          4th *	            1–12	                    Which month to run the command
 Day of Week	      5th *	            0–7 (0 or 7 = Sunday)	    Which day of the week to run the command
+
+
+# NOTE
+In shell scripting, * represents “match zero or more characters” in filenames or strings.
+It’s a shorthand way to select multiple files or patterns without typing them all individually.
+
+# EXAMPLE
+
+* * * * * echo "Hello world" >> /tmp/test.log
+Runs every minute.
+Appends "Hello world" to /tmp/test.log each time.
+After an hour, the file will have 60 new lines.
+
+# Special Characters when working with cron Jobs
+
+
+Symbol     Meaning 
+ `*`      every value 
+ `,`      multiple values 
+ `-`      range 
+ `/`      step value 
+
+ # EXAMPLE
+
+```bash
+ */5 * * * *    echo "we are live from the shell"  > /tmp/start.txt
+ ```
+This command above runs every **5 minutes**.
+
+
