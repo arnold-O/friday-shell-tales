@@ -41,3 +41,19 @@ Cron works with several components:
 
 The **cron daemon** periodically scans these locations and runs jobs when schedules match.
 
+
+
+# how an entry is made the Crontab
+
+we have a starting five define arterisk or dot on the left, then commands and what you choose to do on the right.
+
+* * * * *  command
+
+# Field-by-field explanation
+
+Field   	    Position    	    Values  	                What it means
+Minute  	      1st *	            0–59	                    Which minute of the hour to run the command
+Hour    	      2nd *	            0–23	                    Which hour of the day to run the command
+Day of Month	  3rd *	            1–31	                    Which day of the month to run the command
+Month	          4th *	            1–12	                    Which month to run the command
+Day of Week	      5th *	            0–7 (0 or 7 = Sunday)	    Which day of the week to run the command
