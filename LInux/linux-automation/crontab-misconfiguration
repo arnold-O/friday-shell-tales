@@ -87,3 +87,18 @@ Symbol     Meaning
 This command above runs every **5 minutes**.
 
 
+# Special Strings
+
+Cron supports shortcuts:
+
+String              Meaning 
+@reboot             run at startup
+@yearly             once per year
+@monthly            once per month
+@weekly             once per week
+@daily              once per day
+@hourly             once per hour
+
+# EXAMPLE 
+@daily /usr/local/bin/checks.sh
+
