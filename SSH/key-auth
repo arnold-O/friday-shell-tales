@@ -1,0 +1,175 @@
+## SSH Key Authentication: From Start to Finish
+
+Assume we have:
+
+* **Client PC:** Your local machine
+* **Remote Linux Server:** `server.example.com`
+* **Remote User:** `student`
+
+### Step 1: Generate an SSH Key Pair
+
+On your local machine, generate a key pair:
+
+```bash
+ssh-keygen -t ed25519
+```
+
+This creates two files:
+
+```
+~/.ssh/id_ed25519        ← Private Key (Keep this secret)
+~/.ssh/id_ed25519.pub    ← Public Key (Safe to share)
+```
+
+Think of it this way:
+
+* The **private key** stays with you.
+* The **public key** is copied to the remote server.
+
+---
+
+### Step 2: Create the User on the Remote Server
+
+Before a public key can be used, there must be a user account.
+
+For example:
+
+```bash
+sudo useradd -m student
+sudo passwd student
+```
+
+This creates:
+
+```
+/home/student
+```
+
+Without this user account, there is nowhere to store the public key.
+
+---
+
+### Step 3: Create the SSH Directory
+
+Still on the remote server:
+
+```bash
+mkdir -p /home/student/.ssh
+chmod 700 /home/student/.ssh
+```
+
+---
+
+### Step 4: Copy the Public Key
+
+Copy the contents of your public key:
+
+```bash
+cat ~/.ssh/id_ed25519.pub
+or
+ssh-copy-id <username-on-remote-host>@<ip-of-remote-host>
+```
+
+Example:
+
+```
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIH... user@laptop
+```
+
+Paste that into:
+
+```
+/home/student/.ssh/authorized_keys
+```
+
+Then secure the file:
+
+```bash
+chmod 600 /home/student/.ssh/authorized_keys
+chown -R student:student /home/student/.ssh
+```
+
+Now the server knows which public keys are allowed to authenticate as **student**.
+
+---
+
+### Step 5: Connect to the Server
+
+From your local machine:
+
+```bash
+ssh student@server.example.com
+```
+
+---
+
+### What Happens Behind the Scenes?
+
+Instead of thinking of SSH as "logging into a server," imagine it as a conversation.
+
+**Client:**
+
+> I'd like to log in as **student**.
+
+**Server:**
+
+> Does a user named **student** exist?
+
+-- Yes.
+
+**Server:**
+
+> Let me check `/home/student/.ssh/authorized_keys`.
+
+## A public key is stored there.
+
+**Server:**
+
+> I'll send a cryptographic challenge that can only be answered by someone who owns the matching private key.
+
+**Client:**
+
+> I have the private key. Here's my signed response.
+
+**Server:**
+
+> The signature matches the stored public key.
+
+## Authentication successful.
+
+Access granted.
+
+---
+
+### What If the User Doesn't Exist?
+
+Suppose you try:
+
+```bash
+ssh student@server.example.com
+```
+
+but the server has no **student** account.
+
+The authentication process stops immediately because:
+
+* There is no `/home/student`
+* There is no `.ssh` directory
+* There is no `authorized_keys` file
+
+The server has no user context against which it can verify the public key.
+
+This is exactly why I explained to my client that **SSH keys authenticate users—not servers**.
+
+
+The authentication process still answers the same fundamental questions:
+
+* Who is requesting access?
+* Does that user exist?
+* Is the user's public key trusted?
+* Does the client possess the corresponding private key?
+
+
+Thank you!
+
+
