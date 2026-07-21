@@ -26,7 +26,19 @@ echo "we are here to do justice to you, mr. $a"
 echo my name is mr. smith
 echo
 echo what is your name?
+
+# read help us take input from user
 read namecopy
 echo
-
 echo "welcome home $namecopy, nice to meet you"
+
+# Checking if a file exist
+
+if [ -e /file/name/or/folder ]
+then
+     echo "file does exist"
+else
+     echo "File not found"
+
+
+     
