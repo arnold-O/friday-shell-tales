@@ -34,11 +34,25 @@ echo "welcome home $namecopy, nice to meet you"
 
 # Checking if a file exist
 
-if [ -e /file/name/or/folder ]
+if [ -e  /file/name/or/folder ]
 then
      echo "file does exist"
 else
      echo "File not found"
 
+##Variables
 
-     
+#If you have a variable inside a double string, referencing it with a dollar,\
+# then it print the varible value.
+
+myname="Goldberg"
+age="90"
+
+echo "my name is $myname, and I'm $age yrs old"
+
+
+## Variable that is equal to the output of a command
+
+myvariable1=$(hostanme)
+myvariable2=`hostname`
+
