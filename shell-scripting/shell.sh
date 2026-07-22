@@ -56,3 +56,9 @@ echo "my name is $myname, and I'm $age yrs old"
 myvariable1=$(hostanme)
 myvariable2=`hostname`
 
+## Math Functions
+# here we have the expr to show you wanna evaluate an expression
+# e.g expr 30 + 2 = 32 :: though for "*" this isn't the same as "*" is seen as a wild-card
+# to make it work you have a backslash expr 50 \* 2 = 100
+# we can also add with variable assigned to numeral myvar=200; myvar2=300
+# expr $myvar + $myvar2 = 500
